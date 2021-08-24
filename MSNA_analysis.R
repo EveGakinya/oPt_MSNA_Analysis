@@ -20,7 +20,7 @@ R.version
   source("R/functions/to_alphanumeric_lowercase.R")
   source("R/functions/analysisplan_factory.R")
   #source("R/functions/HNO_Recoding.R")
-  #source("R/functions/Binary_Recoding.R")
+  source("R/functions/Binary_Recoding.R")
   #source("R/functions/presentation_recoding.R")
   #source("R/functions/gimac_recoding.R")
 
@@ -87,7 +87,7 @@ R.version
   
 
 #STRATA WEIGHTING
-strata_weight_fun <- map_to_weighting(sampling.frame = samplingframe_strata,
+strata_weight_fun <- map_to_weighting(sampling.frame = samplingframe,
                                         sampling.frame.population.column = "population",
                                         sampling.frame.stratum.column = "stratum",
                                         data.stratum.column = "strata",
@@ -99,13 +99,16 @@ weight_fun <-strata_weight_fun
 response$weights<- weight_fun(response)
   
 #CREATE NEW FUNCTION FOR WEIGHTING
+response$weights <- ifelse(response$strata == "camps_wb", 1, 
+                           response$weights)
+response <- response %>% drop_na(weights)
  weight_fun<-function(df){
    df$weights
  }
   
 
 #RECODING OF INDICATORS
-response_with_composites <- recoding_preliminary(response, loop)
+response_with_composites <- recoding_preliminary(response)
 
 #DISAGGREGATE MALE AND FEMALE HEADED HHs
 #female_headed <- response_with_composites[which(response_with_composites$X_uuid %in% loop$X_uuid[which(loop$sex == "female" & loop$relationship == "head")]),]
@@ -119,8 +122,8 @@ response_with_composites <- recoding_preliminary(response, loop)
 
 
 #LOAD ANALYSISPLAN
-dap_name <- "gimac"
-analysisplan <- read.csv(sprintf("input/dap/dap_%s.csv",dap_name), stringsAsFactors = F)
+dap_name <- "try"
+analysisplan <- read.csv(sprintf("input/dap/dap_%s.csv",dap_name), stringsAsFactors = F, sep = ";")
 response_with_composites$one <- "one"
 
 #AGGREGATE ACROSS DISTRICTS OR/AND POPULATION GROUPS
@@ -131,16 +134,11 @@ response_with_composites$one <- "one"
 
 result <- from_analysisplan_map_to_output(response_with_composites, analysisplan = analysisplan,
                                           weighting = weight_fun,
-                                          questionnaire = questionnaire, confidence_level = 0.9)
+                                          questionnaire = questionnaire, confidence_level = 0.95)
 
-name <- "gimac_district_popgroup"
+name <- "tryout"
 saveRDS(result,paste(sprintf("output/RDS/result_%s.RDS", name)))
 #summary[which(summary$dependent.var == "g51a"),]
-
-lookup_in_camp<-load_samplingframe("./input/sampling_frame/sampling_frame_in_camp.csv")
-names(lookup_in_camp)[which(names(lookup_in_camp) == "camp")] <- "name"
-names(lookup_in_camp)[which(names(lookup_in_camp) == "camp.long.name")] <- "english"
-names(lookup_in_camp)[which(names(lookup_in_camp) == "governorate")] <- "filter"
 
 summary <- bind_rows(lapply(result[[1]], function(x){x$summary.statistic}))
 write.csv(summary, sprintf("output/raw_results/raw_results_%s.csv", name), row.names=F)

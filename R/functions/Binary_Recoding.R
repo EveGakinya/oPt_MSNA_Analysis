@@ -1,969 +1,892 @@
-round2 <- function(x, n=0) {
-  posneg <- sign(x)
-  z <- abs(x)*10^n
-  z <- z + 0.5
-  z <- trunc(z)
-  z <- z/10^n
-  z <- z*posneg
-  return(z)
-}
+#update.packages(checkBuilt=TRUE, ask=FALSE)
 
-#r <- response
-#loop <- loop
+#r <- read_csv("output/cleaned_data/parent.csv")
+#r <- read.csv("hh_dataset.csv", sep = ";")
+#loop <- read.csv("ind_dataset.csv", sep = ";")
+#r <- read_excel("output/cleaned_data/msna_data_clean_all_2021-08-16.xlsx", sheet = "MSNA_2021_OPT", col_types = "text")
+#setwd("~/Documents/WORK/REACH2021/5. Data Analysis/oPt_MSNA_Analysis/Input/datasets/cleaned")
+#r <- read.csv("hh_dataset.csv", sep = ";")
+
+#r <- read_excel("output/cleaned_data/msna_data_clean.xlsx", sheet = "HH_data", col_types = "text")
 
 
-recoding_preliminary <- function(r, loop) {
+recoding_preliminary <- function(r) {
+  
 
-  r <- r %>%
-    mutate(sex = loop_hoh$sex[match(r$X_uuid, loop_hoh$`X_uuid`)])
-  
-  loop_children <- loop[which(loop$age < 18 & loop$age > 5), ]
-  female_headed <- response[which(response$X_uuid %in% loop$X_uuid[which(loop$sex == "female" & loop$relationship == "head")]),]
-  r$gender_hhh <- loop_hoh$sex[match(r$X_uuid, loop_hoh$X_uuid)]
+##% of interviews conducted with the head of household
+r$hh1 <- ifelse(r$hhh == "yes", 1, 0)
 
-  ############################################### a #############################
-  r$a7        <- as.numeric(r$num_hh_member)
-  r$a8        <- as.numeric(r$num_family_member)
-  r$a9_male   <-
-    as.numeric(r$tot_male) / (as.numeric(r$tot_male) + as.numeric(r$tot_female))
-  r$a9_female <-
-    as.numeric(r$tot_female) / (as.numeric(r$tot_male) + as.numeric(r$tot_female))
-  
-  r$a10_child <-
-    as.numeric(r$tot_child) / (as.numeric(r$tot_male) +  as.numeric(r$tot_female))
-  r$a10_adult <-
-    (as.numeric(r$male_18_59_calc) +  as.numeric(r$female_18_59_calc)) / (as.numeric(r$tot_male) +  as.numeric(r$tot_female))
-  r$a10_elder <-
-    (as.numeric(r$male_60_calc) + as.numeric(r$female_60_calc)) / (as.numeric(r$tot_male) + as.numeric(r$tot_female))
-  
-  r$a11 <-
-    ifelse(
-      loop_hoh$marital_status[match(r$X_uuid, loop_hoh$`X_uuid`)] %in%
-        c("single", "separated", "widowed", "divorced"),
-      1,
-      ifelse(loop_hoh$marital_status[match(r$X_uuid, loop_hoh$`X_uuid`)] %in%
-               c(NA, ""), NA, 0)
-    )
-  
-  r$a12 <-
-    ifelse(loop_children$marital_status[match(r$X_uuid, loop_children$`X_uuid`)] %in% c("married", "widowed", "divorced","separated") ,
-           1,
-           0)
-  
-  r$a13 <-
-    ifelse(loop$age[match(r$X_uuid, loop_hoh$`X_uuid`)] < 18 &
-             loop$work[match(r$X_uuid, loop_hoh$`X_uuid`)] == "yes", 1, 0)
-  
-  r$a14 <- ifelse(r$gender_hhh == "female", 1, 0)
-  
-  
-  r$a15_i     <- r$why_not_return.fear_trauma
-  r$a15_ii    <- r$why_not_return.lack_of_security_forces
-  r$a15_iii   <- r$why_not_return.presence_of_mines
-  r$a15_iv    <- r$why_not_return.discrimination
-  r$a15_v     <- r$why_not_return.lack_security_women
-  r$a15_vi    <- r$why_not_return.movement_restrictions
-  r$a15_vii   <- r$why_not_return.no_personal_id
-  r$a15_viii  <- r$why_not_return.no_transport_return
-  r$a15_ix    <- r$why_not_return.no_money_return
-  r$a15_x     <- r$why_not_return.lack_livelihoods_aoo
-  r$a15_xi    <- r$why_not_return.hh_assets_stolen_damaged
-  r$a15_xii   <- r$why_not_return.house_land_occupied
-  r$a15_xiii  <- r$why_not_return.house_damaged_destroyed
-  r$a15_xiv   <- r$why_not_return.lack_court
-  r$a15_xv    <- r$why_not_return.local_markets_not_working
-  r$a15_xvi   <- r$why_not_return.basic_services_not_enough
-  r$a15_xvii  <- r$why_not_return.lack_of_education_oppotunities
-  r$a15_xviii <- r$why_not_return.immediate_family_wont_return
-  r$a15_xix   <- r$why_not_return.health_conditions
-  r$a15_xx    <- r$why_not_return.children_enrolled_in_displacement
-  r$a15_xxi   <- r$why_not_return.living_conditions_better
-  r$a15_xxii  <- r$why_not_return.other
-  r$a15_xxiii <- r$why_not_return.do_not_know
-  r$a15_xxiv  <- r$why_not_return.decline_to_answer
-  
-  r$a16 <- ifelse(
-    r$shelter_type %in%
-      c(
-        "unfinished_abandoned_building",
-        "damaged_building",
-        "tent",
-        "religious_building",
-        "public_building",
-        "non_residential",
-        "container",
-        "makeshift_shelter"
-      ),
+
+##% of interviews conducted with male or female participants
+r$hh5_i <- ifelse(r$gender_respondent == "female", 1, 0)
+r$hh5_ii <- ifelse(r$gender_respondent == "male", 1, 0)
+
+
+##% of female headed households
+r$hh6_i <- case_when( r$gender_hhh == "female" ~ 1,
+                    r$gender_hhh == "male" ~ 0,
+                    TRUE ~ NA_real_)
+
+
+##% of refugee households
+r$hh8 <- ifelse(r$refugee_status == "yes", 1, 0)
+
+
+##% of households with at least one member pregnant or lactating
+r$hh10 <- ifelse(r$preg_lactating == "yes", 1, 0)
+
+##% of households with at least one member with a chronic disease
+r$hh12 <- ifelse(r$chronic_illness == "yes", 1, 0)
+
+
+##% of HHs displaced as a result of the most recent conflict in Gaza (starting on the 11th of May 2021)
+r$hhd1 <- case_when(r$permanent_location_g == "no" ~ 1,
+                    r$permanent_location_g %in% c("yes", "do_not_know", "decline_to_answer") ~ 0,
+                    TRUE ~ NA_real_)
+
+
+##% of HHs that have been displaced as a result of the recent conflict and have since returned to their previous location
+r$hhd2 <- case_when(r$permanent_location_g == "yes" & r$displacement_status_g == "yes" ~ 1,
+                    r$displacement_status_g %in% c("no", "do_not_know", "decline_to_answer") |
+                    r$permanent_location_g %in% c("no", "do_not_know", "decline_to_answer")   ~ 0,
+                    TRUE ~ NA_real_)
+
+
+##% of HHs currently hosting displaced individuals
+r$hhd3 <- case_when(r$currently_hosting_displaced_g == "yes" ~ 1,
+                    r$currently_hosting_displaced_g %in% c("no", "do_not_know", "decline_to_answer") ~ 0,
+                    TRUE ~ NA_real_)
+ 
+
+ 
+##Food Security
+r$fcs <- 
+  (as.numeric(r$cereals)*2) +(as.numeric(r$nuts_seed)*3) +(as.numeric(r$milk_dairy)*4) + (as.numeric(r$meat)*4)+ 
+  as.numeric(r$vegetables) + as.numeric(r$fruits) + (as.numeric(r$oil_fats)*0.5) + (as.numeric(r$sweets))
+
+
+r$poor_fcs <- ifelse(r$fcs <= 21, 1,0)
+r$borderline_fcs <- ifelse(r$fcs > 21 & r$fcs <=35,1,0)
+r$acceptable_fcs <- ifelse(r$fcs > 35,1,0)
+
+#% of HHs by Food Consumption Score
+r$f1_i <- ifelse(r$fcs <= 21, 1,0)
+r$f1_ii <- ifelse(r$fcs > 21 & r$fcs <=35,1,0)
+r$f1_iii <- ifelse(r$fcs > 35,1,0)
+
+
+### F2
+r$worried <- ifelse(r$lack_enough_food == "yes", 1,0)
+r$healthy <- ifelse(r$lack_healthy_food == "yes", 1,0)
+r$fewfoods <- ifelse(r$lack_food_variety == "yes", 1,0)
+r$skipped <- ifelse(r$skipped_meals == "yes", 1,0)
+r$ate_less <- ifelse(r$ate_less == "yes", 1,0)
+r$ranout <- ifelse(r$out_of_food == "yes", 1,0)
+r$hungry <- ifelse(r$hungry_ddnt_eat == "yes", 1,0)
+r$wholeday <- ifelse(r$day_without_eating == "yes", 1,0)
+
+
+
+##% HH relying on stress / crisis / emergency strategies to cope with a lack of food or money to buy it
+r$stress <-
+  ifelse(
+    r$coping_selling_properties %in% c("no_already_did", "yes") |
+    r$coping_food_credit %in% c("no_already_did", "yes") |
+    r$coping_reducing_expenditure %in% c("no_already_did", "yes"), 
+    1,
+    0  
+  )
+
+r$crisis <-
+  ifelse(
+    r$coping_selling_tranport %in% c("no_already_did", "yes") |
+    r$coping_changing_residency %in% c("no_already_did", "yes") |
+    r$coping_child_labour %in% c("no_already_did", "yes"),
     1,
     0
   )
-  
-  r$a17 <- r$enclosure_issues.none
-  
-  r$a22 <-
-    case_when(r$displaced_again == "yes" ~ 1,
-              is.na(r$displaced_again) ~ NA_real_,
-              TRUE ~  0)
-  
-  r$a24 <-
-    ifelse(
-      r$movement_intentions_3 %in% c("remain") &
-        r$population_group == "idp_out_camp",
-      1,
-      ifelse(
-        r$movement_intentions_12 %in% c("return", "move_inside_iraq", "move_outside_iraq", "wait_to_decide") &
-          r$population_group == "idp_out_camp",
-        0,
-        NA_real_
-      ))
-  
-  r$a25 <-
-    ifelse(
-      r$movement_intentions_12 %in% c("current") &
-        r$population_group == "idp_out_camp",
-      1, ifelse(
-        r$movement_intentions_12 %in% c("return", "move_iraq", "move_other") &
-          r$population_group == "idp_out_camp",
-        0,
-        NA_real_
-      ))
-  
-  r$a26_i    <- r$reason_to_return_to_aoo.security_stable
-  r$a26_ii   <- r$reason_to_return_to_aoo.uxo
-  r$a26_iii  <- r$reason_to_return_to_aoo.other_members_returned
-  r$a26_iv   <- r$reason_to_return_to_aoo.livelihood_availability_there
-  r$a26_v    <- r$reason_to_return_to_aoo.basic_services
-  r$a26_vi   <- r$reason_to_return_to_aoo.emotional_desire
-  r$a26_vii  <- r$reason_to_return_to_aoo.secure_house_land
-  r$a26_viii <- r$reason_to_return_to_aoo.secure_civil_doc
-  r$a26_ix   <- r$reason_to_return_to_aoo.limited_livelihoods_ao
-  r$a26_x    <- r$reason_to_return_to_aoo.limited_services
-  r$a26_xi   <- r$reason_to_return_to_aoo.no_safe_aod
-  r$a26_xii  <- r$reason_to_return_to_aoo.no_integrated_aod
-  r$a26_xiii <- r$reason_to_return_to_aoo.facing_eviction
-  r$a26_xiv  <- r$reason_to_return_to_aoo.forced_security
-  r$a26_xv   <- r$reason_to_return_to_aoo.lack_security_women
-  
-  r$a27 <-
-    ifelse(
-      r$movement_intentions_3 %in% c("remain") &
-        r$population_group == "returnee",
-      1,
-      ifelse(
-        r$movement_intentions_12 %in% c("move_inside_iraq", "move_outside_iraq", "wait_to_decide") &
-          r$population_group == "returnee",
-        0,
-        NA_real_
-      ))
-  
-  r$a28 <-
-    ifelse(
-      r$movement_intentions_b12 %in% c("remain") &
-        r$population_group == "returnee",
-      1, ifelse(
-        r$movement_intentions_b12 %in% c("move_inside_iraq", "move_outside_iraq", "wait_to_decide") &
-          r$population_group == "returnee",
-        0,
-        NA_real_
-      ))
-  
-  r$a29 <- case_when(r$local_integration == "yes" ~ 1,
-                     r$local_integration %in% c("no") ~ 0,
-                     TRUE ~ NA_real_)
-  
-  
-  # ################################################### b #######################################
-  
-  r$b1     <- ifelse(r$inc_employment_pension < 480000, 1, 0)
-  
-  r$b2     <- ifelse(r$primary_livelihood.ngo_charity_assistance == 1, 1, 0)
-  
-  r$b3     <-
-    case_when(
-      r$inc_employment_pension < 480000 &
-        r$gender_hhh == "female" &
-        r$a11 == 1 ~ 1,
-      r$inc_employment_pension >= 480000 &
-        r$gender_hhh == "female" &
-        r$a11 == 1 ~ 0,
-      TRUE ~ NA_real_
-    )
-  
-  r$b5     <-
-    ifelse(
-      r$selling_assets %in% c("no_already_did", "yes") |
-        r$borrow_debt  %in% c("no_already_did", "yes") |
-        r$reduce_spending %in% c("no_already_did", "yes"),
-      1,
-      0
-    )
-  r$b6     <-
-    ifelse(
-      r$selling_transportation_means %in% c("no_already_did", "yes") |
-        r$change_place  %in% c("no_already_did", "yes") |
-        r$child_work %in% c("no_already_did", "yes"),
-      1,
-      0
-    )
-  r$b7     <-
-    ifelse(
-      r$child_dropout_school %in% c("no_already_did", "yes") |
-        r$adult_risky  %in% c("no_already_did", "yes") |
-        r$family_migrating %in% c("no_already_did", "yes") |
-        r$child_forced_marriage %in% c("no_already_did", "yes"),
-      1,
-      0
-    )
-  
-  # ################################################### c #######################################
-  
-  
-  r$c2     <- ifelse(r$injured_explosive %in% c("killed", "injured"), 1, 0)
-  
-  r$c3   <-
-    ifelse(
-      r$difficulty_seeing %in% c("a_lot_of_difficulty", "cannot_do_at_all") |
-        r$difficulty_hearing %in% c("a_lot_of_difficulty", "cannot_do_at_all") |
-        r$difficulty_walking %in% c("a_lot_of_difficulty", "cannot_do_at_all") |
-        r$difficulty_remembering %in% c("a_lot_of_difficulty", "cannot_do_at_all") |
-        r$difficulty_washing %in% c("a_lot_of_difficulty", "cannot_do_at_all") |
-        r$difficulty_communicating %in% c("a_lot_of_difficulty", "cannot_do_at_all"),
-      1,
-      0
-    )
-  
-  r$c9     <- ifelse(r$difficulty_accessing_services == "yes", 1, 0)
-  
-  PLW <- as.data.frame(loop %>% dplyr::group_by(X_uuid) %>% dplyr::summarize(sum(plw, na.rm = T)))
-  
-  
-
-  r$c11    <- PLW[match(r$X_uuid, PLW$X_uuid), 2]
-  # rm(PLW)
-  
-  # ################################################### d ########################################
-  
-  r$d1_i    <- r$info_aid.aid
-  r$d1_ii   <- r$info_aid.safety
-  r$d1_iii  <- r$info_aid.housing
-  r$d1_iv   <- r$info_aid.livelihoods
-  r$d1_v    <- r$info_aid.water
-  r$d1_vi   <- r$info_aid.electricity
-  r$d1_vii  <- r$info_aid.education
-  r$d1_viii <- r$info_aid.healthcare
-  r$d1_ix   <- r$info_aid.legal
-  r$d1_x    <- r$info_aid.property
-  r$d1_xi   <- r$info_aid.uxo
-  r$d1_xii  <- r$info_aid.documentation
-  r$d1_xiii <- r$info_aid.none
-  
-  
-  r$d2_i    <- r$info_provider.ngo
-  r$d2_ii   <- r$info_provider.friends_in_aoo
-  r$d2_iii  <- r$info_provider.friends_visited_aoo
-  r$d2_iv   <- r$info_provider.friends_not_been_in_aoo
-  r$d2_v    <- r$info_provider.local_authorities
-  r$d2_vi   <- r$info_provider.national_authorities
-  r$d2_vii  <- r$info_provider.religious
-  r$d2_viii <- r$info_provider.mukhtars
-  r$d2_ix   <- r$info_provider.sector_leaders
-  r$d2_x    <- r$info_provider.schools
-  
-  r$d8_i    <- r$info_provider_ret.friends
-  r$d8_ii    <- r$info_provider_ret.local_authorities
-  r$d8_iii    <- r$info_provider_ret.mukhtars
-  r$d8_iv    <- r$info_provider_ret.national_authorities
-  r$d8_v    <- r$info_provider_ret.ngo
-  r$d8_vi    <- r$info_provider_ret.religious
-  r$d8_vii    <- r$info_provider_ret.schools
-  r$d8_viii    <- r$info_provider_ret.sector_leaders
-  
-  r$d3_i    <- r$info_mode.mobile
-  r$d3_ii   <- r$info_mode.direct_obs
-  r$d3_iii  <- r$info_mode.face_cmmunic
-  r$d3_iv   <- r$info_mode.television
-  r$d3_v    <- r$info_mode.telephone
-  r$d3_vi   <- r$info_mode.facebook_app
-  r$d3_vii  <- r$info_mode.facebook_messenger
-  r$d3_viii <- r$info_mode.whatsapp
-  r$d3_ix   <- r$info_mode.viber
-  r$d3_x    <- r$info_mode.other_social
-  r$d3_xi   <- r$info_mode.notice_board
-  r$d3_xii  <- r$info_mode.newspapers
-  r$d3_xiii <- r$info_mode.leaflet
-  r$d3_xiv  <- r$info_mode.loud_speakers
-  r$d3_xv   <- r$info_mode.radio
-  
-  r$d4      <- ifelse(r$aid_received == "yes", 1, 0)
-  
-  r$d5_i    <- r$aid_type.cash
-  r$d5_ii   <- r$aid_type.food
-  r$d5_iii  <- r$aid_type.water
-  r$d5_iv   <- r$aid_type.fuel
-  r$d5_v    <- r$aid_type.shelter
-  r$d5_vi   <- r$aid_type.seasonal_items
-  r$d5_vii  <- r$aid_type.healthcare
-  r$d5_viii <- r$aid_type.other_nfi
-  r$d5_ix   <- r$aid_type.education
-  r$d5_x    <- r$aid_type.protection
-  
-  r$d6      <-
-    case_when(r$aid_satisfaction == "yes" ~ 1,
-              is.na(r$aid_satisfaction) ~ NA_real_ ,
-              TRUE ~ 0)
-  
-  r$d7      <- case_when(r$aid_not_satisfied.quantity == 1 ~ 1, 
-                      (r$aid_received =="yes" & r$aid_satisfaction == "yes") | r$aid_not_satisfied.quantity == 0 ~ 0,
-                           TRUE ~  NA_real_)
-  
-  r$d10      <- case_when(r$aid_workers_satisfied == "no" ~ 1, 
-                         r$aid_received =="yes" &  r$aid_workers_satisfied == "yes" ~ 0,
-                         TRUE ~  NA_real_)
-  
-  r$d12      <- case_when(r$complaint_mechanisms == "yes" ~ 1, 
-                          r$complaint_mechanisms =="no"  ~ 0,
-                          TRUE ~  NA_real_)
-  
-  r$d15   <-
-    ifelse(
-      r$covid_info_need == 'yes' &
-        r$covid_info_type.prevention == 1,
-      1,
-      0
-    )
-  
-  ##################################################### F ########################################
-  r$f4 <- ifelse(r$distance_clinic %in% c("less_15", "less_30", "less_hour"), 1, 0)
-  
-  
-  r$f7 <- ifelse(
-    r$property_damaged == "yes" &
-      r$aware_compensation == "yes" &
-      r$applied_compensation == "yes",
-    ifelse(r$received_compensation == "yes", 1, 0),
-    NA_real_
-  )
-
-  r$f7b <- case_when(
-    r$complaint_mechanisms == "yes" ~ 1,
-    is.na(r$complaint_mechanisms) ~ NA_real_,
-    TRUE ~ 0
-  )
-  # ################################################### g ########################################
-  
-  
-  children_attend_ed <- loop_children %>%
-    mutate(
-      not_attending_either = 
-        case_when(attend_formal_ed == "no" & attend_informal_ed == "no" ~ 1, TRUE ~ 0),
-      attending_either = 
-        case_when(attend_formal_ed == "yes" | attend_informal_ed == "yes" ~ 1, TRUE ~ 0),
-      attend_formal_ed =
-        case_when(
-          attend_formal_ed == "yes" ~ 1,
-          attend_formal_ed %in% c("no") ~ 0,
-          TRUE ~ NA_real_
-        ),
-      attend_informal_ed =
-        case_when(
-          attend_informal_ed == "yes" ~ 1,
-          attend_informal_ed %in% c("no") ~ 0,
-          TRUE ~ NA_real_
-        )
-    )
-  
-  children_attend_ed <- children_attend_ed %>%
-    dplyr::group_by(X_uuid) %>%
-    dplyr::summarize(
-      num_attend_formal = sum(attend_formal_ed, na.rm = TRUE),
-      num_attend_informal = sum(attend_informal_ed, na.rm = TRUE),
-      num_not_attend_either = sum(not_attending_either, na.rm = TRUE),
-      num_attending_either = sum(attending_either, na.rm = TRUE),
-      num_schoolage_child = n())
-  
-  r <- left_join(r, children_attend_ed, by = "X_uuid")
-  
-  r$g4 <-
-    ifelse(
-      r$num_not_attend_either > 0, 1, 0
-    )
-  
-  r <- r %>% 
-    mutate(perc_attend_formal = num_attend_formal / num_schoolage_child,
-           perc_attend_either = num_attending_either/ num_schoolage_child)
-  
-  r$g5 <- ifelse(r$perc_attend_formal >= 1, 1, 0)
-  r$g6 <- ifelse(r$perc_attend_either >= 1, 1, 0)
-
-
-  r$g7_i    <- r$reasons_not_attend.school_closed
-  r$g7_ii   <- r$reasons_not_attend.not_safe
-  r$g7_iii  <- r$reasons_not_attend.cannot_afford
-  r$g7_iv   <- r$reasons_not_attend.impossible_to_enrol
-  r$g7_v    <- r$reasons_not_attend.cannot_go_physically
-  r$g7_vi   <- r$reasons_not_attend.overcrowded
-  r$g7_vii  <- r$reasons_not_attend.lack_of_staff
-  r$g7_viii <- r$reasons_not_attend.poor_infrastructure
-  r$g7_ix   <- r$reasons_not_attend.curriculum
-  r$g7_x    <- r$reasons_not_attend.children_working
-  r$g7_xi   <- r$reasons_not_attend.parental_refusal
-  r$g7_xii  <- r$reasons_not_attend.uninterested
-  r$g7_xiii <- r$reasons_not_attend.lack_doc
-  r$g7_xiv  <- r$reasons_not_attend.other
-  
-  
-  r$g8 <-
-    ifelse(
-      r$primary_school_place %in% c("between_2_5", "within_2km") &
-        r$secondary_school_place %in% c("between_2_5", "within_2km"),
-      1,
-      0
-    )
-  
-  r$g9 <- ifelse(r$covid_dropout > 0, 1, 0)
-  
-  r$stress <-
-    ifelse(
-      r$selling_assets %in% c("no_already_did", "yes") |
-        r$borrow_debt  %in% c("no_already_did", "yes") |
-        r$reduce_spending %in% c("no_already_did", "yes") |
-        r$spending_savings %in% c("no_already_did", "yes")   ,
-      1,
-      0
-    )
-  r$crisis <-
-    ifelse(
-      r$selling_transportation_means %in% c("no_already_did", "yes") |
-        r$change_place  %in% c("no_already_did", "yes") |
-        r$child_work %in% c("no_already_did", "yes"),
-      1,
-      0
-    )
-  r$emergency <-
-    ifelse(
-      r$child_dropout_school %in% c("no_already_did", "yes") |
-        r$adult_risky  %in% c("no_already_did", "yes") |
-        r$family_migrating %in% c("no_already_did", "yes") |
-        r$child_forced_marriage %in% c("no_already_did", "yes"),
-      1,
-      0
-    )
-  
-  #FOOD EXPENDITURE SHARE
-  r$food_share <-
-    as.numeric(r$food_exp) / as.numeric(r$tot_expenses)
-  
-  #FOOD CONSUMPTIONS SCORE
-  r$fcs <-
-    (as.numeric(r$cereals) * 2) + (as.numeric(r$nuts_seed) * 3) + (as.numeric(r$milk_dairy) * 4) + (as.numeric(r$meat) * 4) +
-    as.numeric(r$vegetables) + as.numeric(r$fruits) + (as.numeric(r$oil_fats) * 0.5) + (as.numeric(r$sweets) * 0.5)
-  
-  r$livelihood_strategies <-
-    case_when(r$emergency == 1 ~ 4, r$crisis == 1 ~ 3, r$stress == 1 ~ 2, TRUE ~ 1)
-  r$food_share_strategies <-
-    case_when(
-      r$food_share < 0.5 ~ 1,
-      between(r$food_share, 0.5, 0.6499) ~ 2,
-      between(r$food_share, 0.65, 0.7499) ~ 3,
-      r$food_share >= 0.75 ~ 4
-    )
-  r$fcs_strategies <-
-    case_when(r$fcs < 21 ~ 4, between(r$fcs, 21, 35) ~ 3, TRUE ~ 1)
-  
-  r$mean_coping_capacity <-
-    mean_row(r$livelihood_strategies, r$food_share_strategies, na.rm = TRUE)
-  r$g14 <-
-    round2(mean_row(r$mean_coping_capacity, r$fcs_strategies, na.rm = TRUE))
-  r <-
-    dplyr::select(
-      r,
-      -c(
-        "stress",
-        "crisis",
-        "emergency",
-        "food_share",
-        "fcs",
-        "food_share_strategies",
-        "fcs_strategies",
-        "mean_coping_capacity"
-      )
-    )
-  
-  fsc <- r %>%
-    dplyr::select(X_uuid,
-                  no_food,
-                  no_food_freq,
-                  hungry,
-                  hungry_freq,
-                  not_eating,
-                  not_eating_freq)
-  fsc$hhh1_1 <- ifelse(fsc$no_food == "yes", 1, 0)
-  fsc <- fsc %>% mutate(
-    hhh1_2 = case_when(
-      no_food_freq == "rarely" ~ 1,
-      no_food_freq == "sometimes"  ~ 1,
-      no_food_freq == "often" ~ 2,
-      no_food_freq == ""  ~ 0
-    )
-  )
-  fsc$hhh1_3 <- fsc$hhh1_1 * fsc$hhh1_2
-  fsc$hhh2_1 <- ifelse(fsc$hungry == "yes", 1, 0)
-  fsc <- fsc %>% mutate(
-    hhh2_2 = case_when(
-      hungry_freq == "rarely" ~ 1,
-      hungry_freq == "sometimes"  ~ 1,
-      hungry_freq == "often" ~ 2,
-      hungry_freq == ""  ~ 0
-    )
-  )
-  fsc$hhh2_3 <- fsc$hhh2_1 * fsc$hhh2_2
-  fsc$hhh3_1 <- ifelse(fsc$not_eating == "yes", 1, 0)
-  fsc <- fsc %>% mutate(
-    hhh3_2 = case_when(
-      not_eating_freq == "rarely" ~ 1,
-      not_eating_freq == "sometimes"  ~ 1,
-      not_eating_freq == "often" ~ 2,
-      not_eating_freq == ""  ~ 0
-    )
-  )
-  fsc$hhh3_3 <- fsc$hhh3_1 * fsc$hhh3_2
-  fsc$hhs <-
-    rowSums(fsc[, c("hhh1_3", "hhh2_3", "hhh3_3")], na.rm = T)
-  
-  r$g15_i <-
-    ifelse(fsc$hhs[match(r$X_uuid, fsc$X_uuid)] <= 1, 1, 0)
-  
-  r$g15_ii <-
-    ifelse(between(fsc$hhs[match(r$X_uuid, fsc$X_uuid)], 2, 3), 1, 0)
-  
-  r$g15_iii <-
-    ifelse(fsc$hhs[match(r$X_uuid, fsc$X_uuid)] >= 4, 1, 0)
-  
-  # rm(fsc)
-  r$g19 <-
-    ifelse((
-      loop_children$attend_formal_ed[match(r$X_uuid, loop_children$X_uuid)] == "yes" |
-        loop_children$attend_informal_ed[match(r$X_uuid, loop_children$X_uuid)] == "yes"
-    ) &
-      loop_children$work[match(r$X_uuid, loop_children$X_uuid)] == "yes",
-    1,
-    0
-    )
-  
-  
-  r$g25 <-
-    ifelse(
-      r$distance_hospital %in% c("less_15", "less_30", "less_hour") |
-        r$distance_clinic %in% c("less_15", "less_30", "less_hour"),
-      1,
-      0
-    )
-  
-  r$g26 <-
-    ifelse(
-      r$distance_hospital %in% c("less_15", "less_30", "less_hour") &
-        r$hospital_emergency_ser == "yes" &
-        r$hospital_maternity_ser == "yes" &
-        r$hospital_surgical_ser == "yes" &
-        r$hospital_pediatric_ser == "yes",
-      1,
-      0
-    )
-  
-  r$g28 <-
-    ifelse(r$distance_clinic %in% c("less_15", "less_30", "less_hour"),
-           1,
-           0)
-  r$g29 <-
-    ifelse(r$distance_hospital %in% c("less_15", "less_30", "less_hour"),
-           1,
-           0)
-  
-  r$g32 <- ifelse(r$women_specialised_services == "yes", 1, 0)
-  
-  r$g34_i    <- r$health_barriers.cost
-  r$g34_ii   <- r$health_barriers.unqualified_staff
-  r$g34_iii  <- r$health_barriers.civ_docs_problems
-  r$g34_iv   <- r$health_barriers.no_referral_phc
-  r$g34_v    <- r$health_barriers.phc_closed
-  r$g34_vi   <- r$health_barriers.distance_to_treatmentcenter
-  r$g34_vii  <- r$health_barriers.refused_treatment
-  r$g34_viii <- r$health_barriers.no_medicine
-  r$g34_ix   <- r$health_barriers.no_offered_treatment
-  r$g34_x    <- r$health_barriers.not_inclusive
-  r$g34_xi   <- r$health_barriers.no_fem_staff
-  
-  r$g35 <- apply(r, 1, FUN=function(x){
-    ifelse(sum(loop$health_issue.chronic[which(loop$X_uuid == x["X_uuid"])], na.rm = T) > 0, 1, 0)
-  })
-  
-  r$g37 <- ifelse(r$how_much_debt > 505000, 1, 0)
-  
-  r$g38 <-
-    ifelse(
-      r$reasons_for_debt %in% c("basic_hh_expenditure", "education", "food", "health"),
-      1,
-      0
-    )
-  
-  r$g39 <- ifelse(r$covid_loss_job == "yes"  ,
-                   1,
-                   0)
-  
-  r$g41 <- ifelse(r$market_place %in% c("less_15", "less_30"), 1, 0)
-  
-  r$g44 <-
-    ifelse(loop$age[match(r$X_uuid, loop$`X_uuid`)] >= 18 &
-             loop$actively_seek_work[match(r$X_uuid, loop$`X_uuid`)] == "yes", 1, 0)
-  
-  
-  r$g45_i    <- r$employment_primary_barriers.increased_competition
-  r$g45_ii   <- r$employment_primary_barriers.jobs_far
-  r$g45_iii  <- r$employment_primary_barriers.only_low_available
-  r$g45_iv   <-
-    r$employment_primary_barriers.underqualified_for_jobs
-  r$g45_v    <- r$employment_primary_barriers.lack_of_connections
-  r$g45_vi   <- r$employment_primary_barriers.lack_jobs_women
-  r$g45_vii  <- r$employment_primary_barriers.none
-  r$g45_viii <- r$employment_primary_barriers.other
-
-  
-  r$g46 <- ifelse(r$employment_seasonal == "yes", 1, 0)
-  
-  r$g47_i <-
-    ifelse(between(loop$age[match(r$X_uuid, loop$`X_uuid`)], 18, 59) &
-             loop$sex[match(r$X_uuid, loop$`X_uuid`)] == "female" &
-             loop$work[match(r$X_uuid, loop$`X_uuid`)] == "yes",
-           1,
-           0)
-  
-  r$g51 <- ifelse(
-    r$pds_card == "no" |
-      r$id_card_a18 == "no" |
-      r$nationality_cert_a18 == "no" |
-      r$id_card_u18 == "no" |
-      r$nationality_cert_u18 == "no" |
-      r$birth_cert_u18 == "no",
+r$emergency <-
+  ifelse(
+    r$coping_children_dropout %in% c("no_already_did", "yes") |
+    r$coping_risky_behaviour %in% c("no_already_did", "yes") |
+    r$coping_migration %in% c("no_already_did", "yes") |
+    r$coping_forced_marriage %in% c("no_already_did", "yes"),
     1,
     0
   )
-  
-  r$g51b <-
-    ifelse(r$id_card_u18 == "no" |
-             r$nationality_cert_u18 == "no" |
-             r$birth_cert_u18 == "no",
-           1,
-           0)
-  
-  r$g52 <- ifelse(
-    r$`disciplinary_measures.shouted` == 1 |
-      r$`disciplinary_measures.spanked` == 1 ,
-    1,
-    0
-  )
-  
-  
-  r$g53a <-
-    case_when(
-      r$not_residing == "yes" ~ 1,
-      r$not_residing %in% c("no") ~ 0,
-      TRUE ~ NA_real_
-    )
-  r$g53b_i <-
-    case_when(
-      r$g53a == 1 &
-        r$not_residing_reason.married > 0 ~ 1,
-      r$g53a == 0 | r$not_residing_reason.married == 0 ~ 0,
-      TRUE ~ NA_real_
-    )
-  r$g53b_ii <-
-    case_when(
-      r$g53a == 1 &
-        r$not_residing_reason.seek_employment > 0 ~ 1,
-      r$g53a == 0 |
-        r$not_residing_reason.seek_employment == 0 ~ 0,
-      TRUE ~ NA_real_
-    )
-  r$g53b_iii <-
-    case_when(
-      r$g53a == 1 &
-        r$not_residing_reason.study > 0 ~ 1,
-      r$g53a == 0 | r$not_residing_reason.study == 0 ~ 0,
-      TRUE ~ NA_real_
-    )
-  r$g53b_iv <-
-    case_when(
-      r$g53a == 1 &
-        r$not_residing_reason.armed_actors > 0 ~ 1,
-      r$g53a == 0 |
-        r$not_residing_reason.armed_actors == 0 ~ 0,
-      TRUE ~ NA_real_
-    )
-  
-  r$g53b_v <-
-    case_when(
-      r$g53a == 1 &
-        r$not_residing_reason.kidnapped > 0 ~ 1,
-      r$g53a == 0 |
-        r$not_residing_reason.kidnapped == 0 ~ 0,
-      TRUE ~ NA_real_
-    )
-  r$g53b_vi <-
-    case_when(
-      r$g53a == 1 &
-        r$not_residing_reason.missing > 0 ~ 1,
-      r$g53a == 0 | r$not_residing_reason.missing == 0 ~ 0,
-      TRUE ~ NA_real_
-    )
-  r$g53b_vii <-
-    case_when(
-      r$g53a == 1 &
-        r$not_residing_reason.detained > 0 ~ 1,
-      r$g53a == 0 | r$not_residing_reason.detained == 0 ~ 0,
-      TRUE ~ NA_real_
-    )
-  
-  
-  r$g54_i   <-
-    case_when(
-      r$restriction_clearance == "yes" &
-      (r$restriction_clearance_covid == "no" | r$restriction_clearance_covid == "similar") ~ 1,
-      r$restriction_clearance == "yes" &
-      r$restriction_clearance_covid %in% c("yes") ~ 0,
-      r$restriction_clearance == "no" ~ 0,
-      TRUE ~ NA_real_
-    )
-  
-  r$g54_ii   <-
-    case_when(
-      r$restriction_documents == "yes" &
-        (r$restriction_documents_covid == "no" | r$restriction_documents_covid == "similar") ~ 1,
-      r$restriction_documents == "yes" &
-        r$restriction_documents_covid %in% c("yes") ~ 0,
-      r$restriction_documents == "no" ~ 0,
-      TRUE ~ NA_real_
-    )
-  
-  r$g54_iii   <-
-    case_when(
-      r$restriction_time == "yes" &
-        (r$restriction_time_covid == "no" | r$restriction_time_covid == "similar") ~ 1,
-      r$restriction_time == "yes" &
-        r$restriction_time_covid %in% c("yes") ~ 0,
-      r$restriction_time == "no" ~ 0,
-      TRUE ~ NA_real_
-    )
-  
-  r$g54_iv   <-
-    case_when(
-      r$restriction_reason == "yes" &
-        (r$restriction_reason_covid == "no" | r$restriction_reason_covid == "similar") ~ 1,
-      r$restriction_reason == "yes" &
-        r$restriction_reason_covid %in% c("yes") ~ 0,
-      r$restriction_reason == "no" ~ 0,
-      TRUE ~ NA_real_
-    )
 
-  r$g54_v   <-
-    case_when(
-      r$restriction_physical == "yes" &
-        (r$restriction_physical_covid == "no" | r$restriction_physical_covid == "similar") ~ 1,
-      r$restriction_physical == "yes" &
-        r$restriction_physical_covid %in% c("yes") ~ 0,
-      r$restriction_physical == "no" ~ 0,
-      TRUE ~ NA_real_
-    )
-  
-  r$g54_vi   <-
-    case_when(
-      r$restriction_other == "yes" ~ 1,
-      r$restriction_other == "no" ~ 0,
-      TRUE ~ NA_real_
-    )
-  
-  r$g54_vi <-
-    ifelse(r$restriction_other %in% c('no'),
-           0,
-           1)
-  r$g54 <-
-    ifelse(
-      r$g54_i == 1 |
-        r$g54_ii == 1 |
-        r$g54_iii == 1 |
-        r$g54_iv == 1 |
-        r$g54_v == 1 |
-        r$g54_vi == 1,
-      1,
-      0
-    )
-  
-  r$g56 <- case_when(r$child_distress_number > 0 ~ 1, 
-                     r$child_distress_number == 0 | r$hh_member_distress == "no" ~ 0,
-                     TRUE ~ NA_real_)
-  response$g56 <- case_when(response$child_distress_number > 0 ~ 1, 
-                     response$child_distress_number == 0 | response$hh_member_distress == "no" ~ 0,
-                     TRUE ~ NA_real_)
+r$fl1_i <- ifelse(r$stress == 1, 1,0)
+r$fl1_ii <- ifelse(r$crisis == 1, 1,0)
+r$fl1_iii <- ifelse(r$emergency == 1, 1,0)
 
-  response$l11 <- case_when(response$under_18_working_boys > 0 | 
-                              response$under_18_working_girls > 0 ~ 1, TRUE ~ 0)
-  response$l11_i <- case_when(
-    response$tot_children == 0 ~ NA_real_,
-    response$tot_children > 0 & (response$under_18_working_boys > 0 | 
-                                   response$under_18_working_girls> 0)~1,
+
+
+####Health
+##% HH that can access a hospital within a 30min walk from dwellings
+r$h1 <- ifelse(r$distance_hospital <= 30, 1, 0)
+
+
+#% of HH that needed to access health services in the past 3 months
+r$h2 <- ifelse( r$health_accessed == "yes", 1, 0) 
+
+#% of HH that needed to access health services in the past 3 months by type of treatment
+r$h2_i    <- r$type_treatment.covid_19_testing
+r$h2_ii   <- r$type_treatment.covid_19_treatment
+r$h2_iii  <- r$type_treatment.examination_or_non_surgical_treatment
+r$h2_iv   <- r$type_treatment.regular_check_up_treatment
+r$h2_v    <- r$type_treatment.elective_surgery
+r$h2_vi   <- r$type_treatment.emergency_surgery
+r$h2_vii  <- r$type_treatment.giving_birth
+r$h2_bi   <-r$facility_attempt_care.primary
+r$h2_bii  <-r$facility_attempt_care.secondary
+
+
+#% of HHs reporting access barriers when trying to access health services in the past 3 months
+r$h3 <- case_when(r$health_barriers == "yes" ~ 1,
+                    r$health_barriers %in% c("no", "do_not_know", "decline_to_answer") ~ 0,
+                    TRUE ~ NA_real_)
+
+#% of HHs reporting access barriers when trying to access health services in the past 3 months by type of barrier
+r$h3_i    <- r$type_health_barriers.cost
+r$h3_ii   <- r$type_health_barriers.authorities_denied_request
+r$h3_iii  <- r$type_health_barriers.civil_docs_problems
+r$h3_iv   <- r$type_health_barriers.no_referral_phc
+r$h3_v    <- r$type_health_barriers.phc_closed
+r$h3_vi   <- r$type_health_barriers.movement_to_facility_restricted
+r$h3_vii  <- r$type_health_barriers.distance_to_treatmentcenter
+r$h3_viii <- r$type_health_barriers.no_medicine
+r$h3_ix   <- r$type_health_barriers.no_fem_staff
+r$h3_x    <- r$type_health_barriers.unqualified_staff
+r$h3_xi   <- r$type_health_barriers.quality_of_services
+r$h3_xii  <- r$type_health_barriers.family_imposed_barrier
+r$h3_xiii <- r$type_health_barriers.lack_of_awareness
+r$h3_xiv  <- r$type_health_barriers.refugee_status
+r$h3_xv   <- r$type_health_barriers.refused_treatment
+r$h3_xvi  <- r$type_health_barriers.no_offered_treatment
+r$h3_xvii <- r$type_health_barriers.not_inclusive
+
+
+##% of HHs reporting that not all members in their household are willing to be vaccinated against COVID-19
+r$h4 <- ifelse(r$vaccine_willingness == "no", 1, 0)
+
+##% of HHs reporting that not all members in their household are willing to be vaccinated against COVID-19 by reason for not wanting to be vaccinated
+r$h4_i    <- r$vaccine_why_not.not_safe
+r$h4_ii   <- r$vaccine_why_not.not_effective
+r$h4_iii  <- r$vaccine_why_not.health_condition
+r$h4_iv   <- r$vaccine_why_not.covid_no_threat
+r$h4_v    <- r$vaccine_why_not.wait_other_vaccinated
+r$h4_vi   <- r$vaccine_why_not.lack_knowledge_access
+r$h4_vii  <- r$vaccine_why_not.cannot_afford
+r$h4_viii <- r$vaccine_why_not.general_opposition_vaccine
+r$h4_ix   <- r$vaccine_why_not.too_young
+
+
+#% HH with members unable to access one or more services due to disability
+r$hp7 <- case_when(r$disability_access_barriers == "yes" ~ 1,
+                  r$disability_access_barriers %in% c("no", "do_not_know", "decline_to_answer") ~ 0,
+                  TRUE ~ NA_real_)
+
+#% of HH where at least one member is reporting signs of psychosocial distress (self-diagnosed)
+r$hp9 <- ifelse(r$hh_member_distress == "yes", 1,0)
+
+#% of HH where at least one child is reporting signs of psychosocial distress (self-diagnosed)
+r$hp10 <- case_when(r$child_distress_number > 0 ~ 1, 
+                   r$child_distress_number == 0 | r$hh_member_distress == "no" ~ 0,
+                   TRUE ~ NA_real_)
+
+#% of HH where at least one adult is reporting signs of psychosocial distress (self-diagnosed)
+r$hp11 <- case_when(r$adult_distress_number > 0 ~ 1, 
+                   r$adult_distress_number == 0 | r$hh_member_distress == "no" ~ 0,
+                   TRUE ~ NA_real_)
+
+#% of HHs reporting availability of PSS services in case of GBV
+r$hp12 <- ifelse(r$availability_pss_women == "yes", 1, 0)
+
+#% of HHs reporting availability of PSS services in case of GBV by type of service
+r$hp12_i   <-r$type_of_pss.legal_services
+r$hp12_ii  <-r$type_of_pss.medical_services
+r$hp12_iii <-r$type_of_pss.psychosocial_services
+r$hp12_iv  <-r$type_health_barriers.do_not_know
+ 
+#% HH where women and girls of reproductive age (15-49) have access to specialized reproductive health services
+r$hp13 <- ifelse(r$availability_reproductive_services == "yes", 1, 0)
+
+##% of households with access to an improved water source for drinking purposes
+r$w1 <- ifelse(
+  r$drinking_water_source %in%
+    c(
+      "borehole",
+      "prot_well",
+      "prot_spring",
+      "bottled_water",
+      "network_private",
+      "network_comm"
+    ),
+  1,
+  0
+)
+
+##% of households (in Gaza) whose primary drinking water source has changed as a result of the recent escalation
+r$w1a <- case_when(r$changed_drinking_source_g == "yes" ~ 1,
+                   r$changed_drinking_source_g %in% c("no", "do_not_know", "decline_to_answer") ~ 0,
+                   TRUE ~ NA_real_)
+
+#% of households who are using an improved water source for domestic purposes
+r$w2 <- ifelse(
+  r$domestic_water_source %in%
+    c(
+      "borehole",
+      "prot_well",
+      "prot_spring",
+      "bottled_water",
+      "network_private",
+      "network_comm"
+    ),
+  1,
+  0
+)
+
+#% of households with access to an improved sanitation facility
+r$ws1 <- ifelse(r$latrine_type %in% c("vip_pit", "flush"), 1, 0)
+
+#of households who are sharing their sanitation facilities with other households
+r$ws1a <- case_when(r$shared_sanitation == "yes" ~ 1,
+                   r$shared_sanitation == "no" ~ 0,
+                   TRUE ~ NA_real_)
+
+#of households reporting the availability of all listed sanitation items (toilet sear, bidet, niagara, handwashing station, soap, toilet paper)
+ws1b <- case_when(r$latrine_items.toilet_seat == 1 &
+                  r$latrine_items.bidet == 1 &
+                  r$latrine_items.toilet_Niagara == 1 &
+                  r$latrine_items.handwashing_station == 1 &
+                    r$latrine_items.soap == 1 &
+                  r$latrine_items.toilet_paper == 1 ~ 1,
                   TRUE ~ 0)
-table(is.na(response$l11_i))
+
+#% of households who are reporting that their latrines are lockable from the inside
+r$ws1c <- case_when(r$latrines_lockable_inside == "yes" ~ 1,
+                    r$latrines_lockable_inside == "no" ~ 0,
+                    TRUE ~ NA_real_)
+
+#% of households by type of waste drainage system
+r$ws1b_i <- ifelse(r$latrine_waste_drainage == "sewage_system", 1, 0)
+r$ws1b_ii <- ifelse(r$latrine_waste_drainage == "handdug_hole", 1, 0)
+r$ws1b_iii <- ifelse(r$latrine_waste_drainage == "covered_septic", 1, 0)
+r$ws1b_iv <- ifelse(r$latrine_waste_drainage == "open_area", 1, 0)
+r$ws1b_v <- ifelse(r$latrine_waste_drainage == "other", 1, 0)
+
+#% of households with access to a sufficient quantity of water for drinking and domestic purposes
+r$w3 <- ifelse(
+  r$sufficient_water_drinking == "yes" &
+    r$sufficient_water_cooking == "yes" &
+    r$sufficient_water_hygiene_personal == "yes" &
+    r$sufficient_water_hygiene_domestic == "yes" &
+    r$sufficient_water_other_water == "yes",
+  1,
+  0
+)
+
+#% of households with access to a sufficient quantity of water for drinking  purposes
+r$w3 <- ifelse(
+  r$sufficient_water_drinking == "yes",
+  1,
+  0
+)
+
+#% of households reporting relying on coping strategies to adapt to a lack of water by type of coping strategy
+r$w4_i <- r$water_coping_mechanism_g.no_coping_needed_used
+r$w4_ii <- r$water_coping_mechanism_g.spent_more_on_water
+r$w4_iii <- r$water_coping_mechanism_g.water_on_credit
+r$w4_iv <- r$water_coping_mechanism_g.drank_stored_water
+r$w4_v <- r$water_coping_mechanism_g.reduced_drinking_water
+r$w4_vi <- r$water_coping_mechanism_g.modified_hygiene
+r$w4_vii <- r$water_coping_mechanism_g.drank_cleaning_water
+r$w4_viii <- r$water_coping_mechanism_g.other
+
+#% of households affected by floods
+r$w9 <- case_when(r$num_of_floods > 0 ~ 1, 
+                    r$num_of_floods == 0 ~ 0,
+                    TRUE ~ NA_real_)
+
+#% of households whose daily activities have been affected by floods 
+r$w9_a <- case_when(r$floods_activities_effects.none == 1 ~ 0, 
+                  r$floods_activities_effects.none == 0 & r$floods_activities_effects.do_not_know == 1 ~ 0,
+                  r$floods_activities_effects.none == 0 & r$floods_activities_effects.decline_to_answer == 1 ~ 0, 
+                  is.na(r$floods_activities_effects.none) ~ NA_real_,
+                  TRUE ~ 1)
+
+
+
+#% of households whose shelter has been affected by floods (as a percentage of those households who have experienced floods
+r$w9_b <- case_when(r$floods_shelter_effects.none == 1 ~ 0, 
+                    r$floods_shelter_effects.none == 0 & r$floods_shelter_effects.do_not_know == 1 ~ 0,
+                    r$floods_shelter_effects.none == 0 & r$floods_shelter_effects.decline_to_answer == 1 ~ 0, 
+                    is.na(r$floods_shelter_effects.none) ~ NA_real_,
+                    TRUE ~ 1)
+
+#% of households covered by municipality waste system
+r$ws1b_i <- ifelse(r$latrine_waste_drainage == "sewage_system", 1, 0)
+
+#% of households reporting waste accumulation for more than 3 days in their area
+r$w11 <- case_when(r$waste_accumulation_days > 3 ~ 1, 
+                  r$waste_accumulation_days <= 3 ~ 0,
+                  TRUE ~ NA_real_)
+
+#% of households living in critical shelter
+r$s1 <- ifelse(
+  r$shelter_type %in%
+    c(
+      "unfinished_abandoned_building",
+      "damaged_building",
+      "tent",
+      "collective_shelter",
+      "container",
+      "makeshift_shelter"
+    ),
+  1,
+  0
+)
+
+
+#% of households where at least one member is sleeping in the living room
+r$s2_a <- case_when(r$sleeping_living_room == "yes" ~ 1,
+                    r$sleeping_living_room %in% c("no","do_not_know")  ~ 0,
+                    TRUE ~ NA_real_)
+
+#Average number of household members per room
+r$s2 <- as.numeric(r$hh_size) / as.numeric(r$num_of_rooms)
+
+#% of households by occupancy status
+r$sp1_i <- ifelse(r$occupancy_status == "ownership", 1, 0)
+r$sp1_ii <- ifelse(r$occupancy_status == "rented", 1, 0)
+r$sp1_iii <- ifelse(r$occupancy_status == "hosted_without_rent", 1, 0)
+r$sp1_iv <- ifelse(r$occupancy_status == "squatting", 1, 0)
+r$sp1_v <- ifelse(r$occupancy_status == "other", 1, 0)
+
+#% of households reporting risk of eviction
+r$sp2 <- ifelse(r$hh_risk_eviction == "yes" , 1, 0)
+
+#% of households reporting risk of eviction by reason
+r$sp3_i <- r$hh_risk_eviction_reason.authorities_request 
+r$sp3_ii <- r$hh_risk_eviction_reason.lack_funds 
+r$sp3_iii <- r$hh_risk_eviction_reason.no_longer_hosted 
+r$sp3_iv <- r$hh_risk_eviction_reason.unaccepted_by_community 
+r$sp3_v <- r$hh_risk_eviction_reason.owner_request 
+r$sp3_vi <- r$hh_risk_eviction_reason.no_agreement 
+r$sp3_vii <- r$hh_risk_eviction_reason.inadequate 
+r$sp3_viii <- r$hh_risk_eviction_reason.occupied 
+r$sp3_ix <- r$hh_risk_eviction_reason.confiscation 
+r$sp3_x <- r$hh_risk_eviction_reason.dispute 
+
+#% of households whose shelter has any kind of damage or defects
+r$s3 <- case_when(r$shelter_issues.none == 1 ~ 0, 
+                    r$shelter_issues.none == 0 & r$shelter_issues.do_not_know == 1 ~ 0,
+                    r$shelter_issues.none == 0 & r$shelter_issues.decline_to_answer == 1 ~ 0, 
+                    is.na(r$shelter_issues.none) ~ NA_real_,
+                    TRUE ~ 1)
+
+
+#% of households that report having experienced threats or violent/destructive acts by non-Palestinian communities in their area in the past 30 days
+r$sp4 <- case_when(r$settler_threats_wb == "yes" ~ 1,
+                  r$settler_threats_wb %in% c("no","do_not_know","decline_to_answer")  ~ 0,
+                  TRUE ~ NA_real_)
+
+#% of households that report having experienced threats or violent/destructive acts by non-Palestinian communities in their area in the past 30 days by type of threat (as a percentage of those households who have experienced threats/violence)
+r$sp4_i <- r$settler_threats_type_wb.disrupting_activities 
+r$sp4_ii <- r$settler_threats_type_wb.menacing_behavior 
+r$sp4_iii <- r$settler_threats_type_wb.verbal_abuse
+r$sp4_iv <- r$settler_threats_type_wb.sexual_harassment 
+r$sp4_v <- r$settler_threats_type_wb.obstructed_shelter
+r$sp4_vi <- r$settler_threats_type_wb.obstructed_vicinity 
+r$sp4_vii <- r$settler_threats_type_wb.physical_violence
+r$sp4_viii <- r$settler_threats_type_wb.non_shelter_items_damage 
+r$sp4_ix <- r$settler_threats_type_wb.shelter_damage 
+r$sp4_x <- r$settler_threats_type_wb.economic_damage 
+r$sp4_xi <- r$settler_threats_type_wb.theft 
+r$sp4_xii <- r$settler_threats_type_wb.occupation_of_shelter 
+r$sp4_xiii <- r$settler_threats_type_wb.forced_eviction 
+r$sp4_xiv <- r$settler_threats_type_wb.detention
+r$sp4_xv <- r$settler_threats_type_wb.other 
+
+#% of households adopting coping strategies in the last 30 days to avoid threats or violent/destructive acts by non-Palestinian communities living in their area
+r$p1 <- case_when(r$coping_settler_threats_wb.none == 1 ~ 0, 
+                  r$coping_settler_threats_wb.none == 0 & r$coping_settler_threats_wb.do_not_know == 1 ~ 0,
+                  r$coping_settler_threats_wb.none == 0 & r$coping_settler_threats_wb.decline_to_answer == 1 ~ 0, 
+                  is.na(r$coping_settler_threats_wb.none) ~ NA_real_,
+                  TRUE ~ 1)
+
+
+#% of households adopting coping strategies in the last 30 days to avoid threats or violent/destructive acts by non-Palestinian communities living in their area by type of coping strategy
+r$p1_i <- r$coping_settler_threats_wb.change_livelihoods 
+r$p1_ii <- r$coping_settler_threats_wb.none
+r$p1_iii <- r$coping_settler_threats_wb.withheld_children_school
+r$p1_iv <-  r$coping_settler_threats_wb.withheld_children_travel
+r$p1_v <-  r$coping_settler_threats_wb.withheld_adult_travel
+r$p1_vi <-  r$coping_settler_threats_wb.security_measures
+r$p1_vii <-  r$coping_settler_threats_wb.moved_property
+r$p1_viii <- r$coping_settler_threats_wb.sent_children_away 
+r$p1_ix <-  r$coping_settler_threats_wb.sent_adults_away 
+r$p1_x <- r$coping_settler_threats_wb.hh_moved 
+r$p1_xi <- r$coping_settler_threats_wb.contact_municipality
+r$p1_xii <- r$coping_settler_threats_wb.other 
+
+
+#% of households with school-aged children that are currently enrolled in basic or secondary education
+r$e1 <- case_when(r$total_enrolled_children > 0 ~ 1, 
+                  r$total_enrolled_children == 0 ~ 0,
+                  TRUE ~ NA_real_)
+
+#% of households with school-aged children (who were previously attending school) who are continuing teaching and learning activities remotely
+r$e2 <- case_when(r$remote_learning > 0 ~ 1, 
+                  r$remote_learning == 0 ~ 0,
+                  TRUE ~ NA_real_)
+
+
+#% of households with school-aged children, where at least one child dropped out of school during the current school year
+r$e4 <- case_when(r$dropout_num > 0 ~ 1, 
+                   r$dropout_num == 0 ~ 0,
+                   TRUE ~ NA_real_)
+
+
+#% of households with a least one child with a disability that is not attending school regularly (as a percentage of households with at least one child with a disability)
+r$e5 <- case_when(r$disabled_school_attendance == "no" ~ 1,
+                   r$disabled_school_attendance %in% c("no","do_not_know","decline_to_answer")  ~ 0,
+                   TRUE ~ NA_real_)
+
+#% of households with children with a disability reporting challenges to accessing education services
+r$e6 <- case_when(r$disabled_school_challenges.none == 1 ~ 0, 
+                   r$disabled_school_challenges.none == 0 & r$disabled_school_challenges.do_not_know == 1 ~ 0,
+                   r$disabled_school_challenges.none == 0 & r$disabled_school_challenges.decline_to_answer == 1 ~ 0, 
+                   is.na(r$disabled_school_challenges.none) ~ NA_real_,
+                   TRUE ~ 1)
+
+
+#% of households that are in need of catch-up learning programmes
+r$e7 <- case_when(r$catch_up_learning == "yes" ~ 1,
+                  r$catch_up_learning %in% c("no","do_not_know","decline_to_answer")  ~ 0,
+                  TRUE ~ NA_real_)
+
+
+#% of households in Gaza that are NOT planning to enroll all school-aged children at the start of the next school year
+r$e8 <- case_when(r$planning_school_enrollment %in% c("none","some") ~ 1,
+                  r$planning_school_enrollment %in% c("not_applicable","do_not_know", "all")  ~ 0,
+                  TRUE ~ NA_real_)
+
+
+#% of households reporting the availability of PSS services in schools
+r$ep1 <- case_when(r$school_pss_services.no == 1 ~ 0, 
+                   r$school_pss_services.no == 0 & r$school_pss_services.not_sure == 1 ~ 0,
+                   r$school_pss_services.no == 0 & r$school_pss_services.decline_to_answer == 1 ~ 0, 
+                   is.na(r$school_pss_services.no) ~ NA_real_,
+                   TRUE ~ 1)
+
+
+#% of households reporting the availability of PSS services in school by type of service
+r$ep1_ii <- r$school_pss_services.trained_cousellors
+r$ep1_iii <- r$school_pss_services.trained_teachers
+r$ep1_iv <- r$school_pss_services.external_pss
+r$ep1_v <- r$school_pss_services.other
+
+
+#% of households reporting barriers to accessing education 
+r$ep2 <- case_when(r$edu_barriers.none == 1 ~ 0, 
+                   r$edu_barriers.none == 0 & r$edu_barriers.do_not_know == 1 ~ 0,
+                   r$edu_barriers.none == 0 & r$edu_barriers.decline_to_answer == 1 ~ 0, 
+                   is.na(r$edu_barriers.none) ~ NA_real_,
+                   TRUE ~ 1)
+
+#% of households reporting barriers to school by type of barriers
+r$ep2_i <- r$edu_barriers.school_stopped
+r$ep2_ii <- r$edu_barriers.commuting_not_safe_girls 
+r$ep2_iii <- r$edu_barriers.commuting_not_safe_boys
+r$ep2_iv <- r$edu_barriers.lack_fees 
+r$ep2_v <- r$edu_barriers.unable_to_enroll
+r$ep2_vi <- r$edu_barriers.lack_of_schools 
+r$ep2_vii <- r$edu_barriers.cannot_physically_go
+r$ep2_viii <- r$edu_barriers.overcrowed_schools
+r$ep2_ix <- r$edu_barriers.lack_of_staff
+r$ep2_x <- r$edu_barriers.poor_infrastructure
+r$ep2_xi <- r$edu_barriers.curriculum_issues 
+r$ep2_xii <- r$edu_barriers.child_working 
+r$ep2_xiii <- r$edu_barriers.parental_refusal
+r$ep2_xiv <- r$edu_barriers.lack_interest
+
+
+## households that can access a functional basic and secondary school within a 30min walk from dwellings
+r$e11 <- ifelse(r$primary_school_distance %in% c("less_15", "less_30") &
+                   r$secondary_school_distance %in% c("less_15", "less_30"),1,0)
+
+##% of households reporting safety concerns in relation to their childrens' education (traveling to or studying in education facilities reported as being unsafe or very unsafe)
+r$ep3 <-ifelse(r$school_safety %in% c("unsafe", "very_unsafe"),1,0)
+
+
+##% of households reporting safety concerns in relation to their childrens' education by type of concern
+r$ep4_i <- r$school_safety_concerns.firing_tear_gas_wb
+r$ep4_ii <- r$school_safety_concerns.students_detention_wb 
+r$ep4_iii <- r$school_safety_concerns.checkpoints_delays_wb
+r$ep4_iv <- r$school_safety_concerns.school_military_entry_wb 
+r$ep4_v <- r$school_safety_concerns.military_presence_wb
+r$ep4_vi <- r$school_safety_concerns.demolition_threat_wb 
+r$ep4_vii <- r$school_safety_concerns.contracting_covid_19_wb
+r$ep4_viii <- r$school_safety_concerns.violence_at_school_wb
+r$ep4_ix <- r$school_safety_concerns.violence_commuting_wb
+r$ep4_x <- r$school_safety_concerns.sexual_abuse_at_schl_wb
+r$ep4_xi <- r$school_safety_concerns.sexual_abuse_commuting_wb 
+r$ep4_xii <- r$school_safety_concerns.crossing_roads_wb 
+r$ep4_xiii <- r$school_safety_concerns.attacks_settlers_wb
+r$ep4_xiv <- r$school_safety_concerns.attacks_school_wb
+r$ep4_xv <- r$school_safety_concerns.environmental_hazards_wb 
+r$ep4_xvi <- r$school_safety_concerns.other_wb
+
+r$ep4a_i <- r$school_safety_concerns.firing_tear_gas_ej
+r$ep4a_ii <- r$school_safety_concerns.students_detention_ej 
+r$ep4a_iii <- r$school_safety_concerns.checkpoints_delays_ej
+r$ep4a_iv <- r$school_safety_concerns.school_military_entry_ej 
+r$ep4a_v <- r$school_safety_concerns.military_presence_ej
+r$ep4a_vi <- r$school_safety_concerns.demolition_threat_ej 
+r$ep4a_vii <- r$school_safety_concerns.contracting_covid_19_ej
+r$ep4a_viii <- r$school_safety_concerns.violence_at_school_ej
+r$ep4a_ix <- r$school_safety_concerns.violence_commuting_ej
+r$ep4a_x <- r$school_safety_concerns.sexual_abuse_at_schl_ej
+r$ep4a_xi <- r$school_safety_concerns.sexual_abuse_commuting_ej 
+r$ep4a_xii <- r$school_safety_concerns.crossing_roads_ej
+r$ep4a_xiii <- r$school_safety_concerns.attacks_settlers_ej
+r$ep4a_xiv <- r$school_safety_concerns.attacks_school_ej
+r$ep4a_xv <- r$school_safety_concerns.environmental_hazards_ej 
+r$ep4a_xvi <- r$school_safety_concerns.other_ej
+
+
+r$ep4b_i <- r$school_safety_concerns.firing_tear_gas_h2
+r$ep4b_ii <- r$school_safety_concerns.students_detention_h2 
+r$ep4b_iii <- r$school_safety_concerns.checkpoints_delays_h2
+r$ep4b_iv <- r$school_safety_concerns.school_military_entry_h2 
+r$ep4b_v <- r$school_safety_concerns.military_presence_h2
+r$ep4b_vi <- r$school_safety_concerns.demolition_threat_h2
+r$ep4b_vii <- r$school_safety_concerns.contracting_covid_19_h2
+r$ep4b_viii <- r$school_safety_concerns.violence_at_school_h2
+r$ep4b_ix <- r$school_safety_concerns.violence_commuting_h2
+r$ep4b_x <- r$school_safety_concerns.sexual_abuse_at_schl_h2
+r$ep4b_xi <- r$school_safety_concerns.sexual_abuse_commuting_h2 
+r$ep4b_xii <- r$school_safety_concerns.crossing_roads_h2
+r$ep4b_xiii <- r$school_safety_concerns.attacks_settlers_h2
+r$ep4b_xiv <- r$school_safety_concerns.attacks_school_h2
+r$ep4b_xv <- r$school_safety_concerns.environmental_hazards_h2 
+r$ep4b_xvi <- r$school_safety_concerns.other_h2
+
+r$ep4c_i <- r$school_safety_concerns.firing_tear_gas_gs
+r$ep4c_ii <- r$school_safety_concerns.students_detention_gs 
+r$ep4c_iii <- r$school_safety_concerns.checkpoints_delays_gs
+r$ep4c_iv <- r$school_safety_concerns.demolition_threat_gs
+r$ep4c_v <- r$school_safety_concerns.contracting_covid_19_gs
+r$ep4c_vi <- r$school_safety_concerns.violence_at_school_gs
+r$ep4c_vii <- r$school_safety_concerns.violence_commuting_gs
+r$ep4c_viii <- r$school_safety_concerns.sexual_abuse_at_schl_gs
+r$ep4c_ix <- r$school_safety_concerns.sexual_abuse_commuting_gs 
+r$ep4c_x <- r$school_safety_concerns.crossing_roads_gs
+r$ep4c_xi <- r$school_safety_concerns.attacks_settlers_gs
+r$ep4c_xii <-  r$school_safety_concerns.attacks_school_gs
+r$ep4c_xiii <- r$school_safety_concerns.environmental_hazards_gs
+r$ep4c_xiv <-r$school_safety_concerns.other_gs
+
+##HHs whose monthly income has decreased as a result of COVID-19
+r$l2 <- ifelse(r$income_change_covid == "yes" ,1,0)
+
+##% of households reporting that their typical monthly income has changed since the recent escalation
+r$l3 <- case_when(r$income_change_conflict_g %in% c("decreased_lot","decreased_little","increased_little","increased_lot") ~ 1,
+                  r$income_change_conflict_g %in% c("no_change","do_not_know") ~ 0,
+                  TRUE ~ NA_real_)
+
+##% of households reporting an impact of the recent conflict on their livelihood assets or resources
+r$l3a <- case_when(r$finances_change_conflict_g.none == 1 ~ 0, 
+                  r$finances_change_conflict_g.none == 0 & r$finances_change_conflict_g.do_not_know == 1 ~ 0,
+                  r$finances_change_conflict_g.none == 0 & r$finances_change_conflict_g.decline_to_answer == 1 ~ 0, 
+                  is.na(r$finances_change_conflict_g.none) ~ NA_real_,
+                  TRUE ~ 1)
+
+##% of HHs with a debt value of more than NIS 5,000
+r$l4a<- ifelse(r$how_much_debt > 5000, 1,
+                ifelse(r$how_much_debt <= 5000, 0, NA_real_))
+
+
+##% of HHs with a debt value of more than NIS 10,000 
+r$l4b<- ifelse(r$how_much_debt > 10000, 1,
+               ifelse(r$how_much_debt <= 10000, 0, NA_real_))
+
+##% HHs unable to afford basic needs (% HH taking on debt due to healthcare, food, education, or basic household expenditures)
+r$l5 <-
+  ifelse(
+    r$reasons_for_debt %in% c("healthcare", "food", "education","basic_household_expenditures"),
+    1,
+    0
+  )
+
+##% of HHs by primary reason for taking on debt
+r$l5_i <- ifelse(r$reasons_for_debt == "healthcare" ,1,0)
+r$l5_ii <- ifelse(r$reasons_for_debt == "food" ,1,0)
+r$l5_iii <- ifelse(r$reasons_for_debt == "education" ,1,0)
+r$l5_iv <- ifelse(r$reasons_for_debt == "basic_household_expenditure" ,1,0)
+r$l5_v <- ifelse(r$reasons_for_debt == "business_related" ,1,0)
+r$l5_vi <- ifelse(r$reasons_for_debt == "clothing_or_NFI" ,1,0)
+r$l5_vii <- ifelse(r$reasons_for_debt == "income_generating_activities" ,1,0)
+r$l5_viii <- ifelse(r$reasons_for_debt == "major_purchase" ,1,0)
+r$l5_ix <- ifelse(r$reasons_for_debt == "reconstruction" ,1,0)
+r$l5_x <- ifelse(r$reasons_for_debt == "weddings" ,1,0)
+
+
+##% of HHs whose debt has increased as a result of COVID-19
+r$l6 <- case_when(r$debt_due_to_covid == "yes" ~ 1,
+                  r$debt_due_to_covid %in% c("no","do_not_know","decline_to_answer")  ~ 0,
+                  TRUE ~ NA_real_)
+
+
+##Average HH expenditure share by type of expenditure
+r$food_share <- round((as.numeric(r$food_exp)/ as.numeric(r$tot_expenses))*100 , 1)
+r$l7_i <- ifelse(r$food_share > 100, NA, 
+               r$food_share)
+
+r$water_share <- round((as.numeric(r$water_exp)/ as.numeric(r$tot_expenses))*100 , 1)
+
+r$l7_ii <- ifelse(r$water_share > 100, NA, 
+                 r$water_share)
+
+r$rent_share <- round((as.numeric(r$rent_exp)/ as.numeric(r$tot_expenses))*100 , 1)
+r$l7_iii <- ifelse(r$rent_share > 100, NA, 
+                  r$rent_share)
+
+r$medical_share <- round((as.numeric(r$medical_exp)/ as.numeric(r$tot_expenses))*100 , 1)
+r$l7_iv <- ifelse(r$medical_share > 100, NA, 
+                   r$medical_share)
+
+r$debt_share <- round((as.numeric(r$debt_repayment)/ as.numeric(r$tot_expenses))*100 , 1)
+r$l7_v <- ifelse(r$debt_share > 100, NA, 
+                  r$debt_share)
+
+r$fuel_share <- round((as.numeric(r$fuel_exp)/ as.numeric(r$tot_expenses))*100 , 1)
+r$l7_vi <- ifelse(r$fuel_share > 100, NA, 
+                  r$fuel_share)
+
+##% of HHs spending more than 50% of total expenditure on food
+r$l7a <- ifelse(r$l7_i > 50, 1,
+                ifelse(r$l7_i <=50, 0, NA ))
+
+
+## HH with at least one adult (18+) unemployed and seeking work
+r$l9 <- ifelse(r$unemployed_adults > 0, 1,0)
+
+
+##Main barriers to employment
+r$l10_i <- r$barriers_to_employment.job_competition
+r$l10_ii <- r$barriers_to_employment.jobs_are_too_far_away  
+r$l10_iii <- r$barriers_to_employment.low_pay_degrading_jobs
+r$l10_iv <- r$barriers_to_employment.unqualified
+r$l10_v <- r$barriers_to_employment.lack_family_connection
+r$l10_vi <- r$barriers_to_employment.lack_women_opportunities
+r$l10_vii <- r$barriers_to_employment.lack_disability_opportunities
+r$l10_viii <- r$barriers_to_employment.restrictions
+r$l10_ix <- r$barriers_to_employment.other
+
+
+##% of  HH with at least one person under (<18) working
+r$lp1 <- case_when(r$under_18_working == "yes" ~ 1,
+                  r$under_18_working %in% c("no","do_not_know","decline_to_answer")  ~ 0,
+                  TRUE ~ NA_real_)
+
+
+##% of HH reporting members losing their job permanently or temporarily as a result of the COVID-19 outbreak
+r$l12 <- ifelse(r$covid_loss_job == "yes", 1,0)
+
+
+##% of HH reporting members losing jobs permanently or temporarily as a result of the recent conflict
+r$l12b <- case_when(r$conflict_loss_job == "yes" ~ 1,
+                  r$conflict_loss_job %in% c("no","do_not_know","decline_to_answer")  ~ 0,
+                  TRUE ~ NA_real_)
+
+
+##% of HHs relying on humanitarian assistance as a primary source of income
+r$l13     <- ifelse(r$primary_livelihood.charity_assistance  == 1, 1, 0)
+
+##% of HH reporting challenges in obtaining enough money to meet its needs over the last 30 days
+r$l14 <- case_when( r$afford_communication_needs == "yes" |
+                    r$afford_education_needs == "yes" |
+                    r$afford_health_needs == "yes"|
+                    r$afford_shelter_needs == "yes"|
+                    r$afford_transport_services == "yes"|
+                    r$afford_utilities == "yes" ~ 1,
+                    TRUE ~ 0)
+
+##% of HHs reporting challenges in obtaining enough money to meet their basic needs over the past 30 days by type of need
+r$l14_i <- ifelse(r$afford_communication_needs == "yes" ,1,0)
+r$l14_ii <- ifelse(r$afford_education_needs == "yes" ,1,0)
+r$l14_iii <- ifelse(r$afford_health_needs == "yes" ,1,0)
+r$l14_iv <- ifelse(r$afford_shelter_needs == "yes" ,1,0)
+r$l14_v <- ifelse(r$afford_transport_services == "yes" ,1,0)
+r$l14_vi <- ifelse(r$afford_utilities == "yes" ,1,0)
+
+
+##% HHs where the primary income-earner is below the age of 18 
+r$p2a <- case_when(r$income_earner%in% c("male_child_14_17", "male_child_13", "female_child_14_18", "female_child_13") ~ 1,
+                 TRUE ~ 0)
+
+
+##% HHs where the primary decision-maker is below the age of 18 
+r$p2b <- case_when( r$decision_maker.female_child_14 == "1"|
+                    r$decision_maker.female_child_14_18 == "1"|
+                    r$decision_maker.male_child_13 == "1" |
+                    r$decision_maker.male_child_14_17 == "1" ~ 1,
+                  TRUE ~ 0)
+
+##% of HHs where women and girls avoid areas because they feel unsafe there 
+r$p3 <- ifelse(r$women_feel_unsafe == "yes" , 1, 0)
   
-  r$g57 <- case_when(r$adult_distress_number > 0 ~ 1, 
-                     r$adult_distress_number == 0 | r$hh_member_distress == "no" ~ 0,
-                     TRUE ~ NA_real_)
-  
-  r$g61 <-
-    case_when(
-      r$security_incident == "yes" ~ 1,
-      r$security_incident %in% c('no') ~ 0,
-      TRUE ~ NA_real_
-    )
-  
-  r$g62_i <-
-    case_when(
-      r$security_incident_gender %in% c("male", "both") ~ 1,
-      r$security_incident_gender == "female" | r$security_incident == "no" ~ 0,
-      TRUE ~ NA_real_
-    )
-  r$g62_ii <-
-    case_when(
-      r$security_incident_gender %in% c('female', "both") ~ 1,
-      r$security_incident_gender == "male" | r$security_incident == "no" ~ 0,
-      TRUE ~ NA_real_
-    )
-  
-  r$g63 <-
-    case_when(
-      r$feel_unsafe == "yes" ~ 1,
-      r$feel_unsafe %in% c('no') ~ 0,
-      TRUE ~ NA_real_
-    )
-  
-  r$g64 <- case_when(
-    r$hh_risk_eviction == "yes" ~ 1,
-    r$hh_risk_eviction %in% c('no') ~ 0,
+
+##% of HHs reporting safety or security concerns for girls
+r$p4 <- case_when(r$security_concerns_girls.none == 1 ~ 0, 
+                  r$security_concerns_girls.none == 0 & r$security_concerns_girls.do_not_know == 1 ~ 0,
+                  r$security_concerns_girls.none == 0 & r$security_concerns_girls.decline_to_answer == 1 ~ 0, 
+                  is.na(r$security_concerns_girls.none) ~ NA_real_,
+                  TRUE ~ 1)
+
+##% of HHs reporting safety or security concerns for boys
+r$p5 <- case_when(r$security_concerns_boys.none == 1 ~ 0, 
+                  r$security_concerns_boys.none == 0 & r$security_concerns_boys.do_not_know == 1 ~ 0,
+                  r$security_concerns_boys.none == 0 & r$security_concerns_boys.decline_to_answer == 1 ~ 0, 
+                  is.na(r$security_concerns_boys.none) ~ NA_real_,
+                  TRUE ~ 1)
+
+##% of HHs reporting safety or security concerns for children with a disability (as a percentage of those HHs where at least one child member of the HH has a disability)
+r$p6 <- case_when(r$security_concerns_disabled.none == 1 ~ 0, 
+                  r$security_concerns_disabled.none == 0 ~ 1,
+                  r$security_concerns_disabled.do_not_know == 1 ~ 0, 
+                  r$security_concerns_disabled.decline_to_answer == 1 ~ 0,
+                                  TRUE ~ NA_real_)
+
+
+##% of HHs reporting safety or security concerns for women
+r$p7 <- case_when(r$security_concerns_women.none == 1 ~ 0, 
+                    r$security_concerns_women.none == 0 & r$security_concerns_women.do_not_know == 1 ~ 0,
+                    r$security_concerns_women.none == 0 & r$security_concerns_women.decline_to_answer == 1 ~ 0, 
+                    is.na(r$security_concerns_women.none) ~ NA_real_,
+                    TRUE ~ 1)
+
+
+##% of households that have a standing demolition order
+r$sp5 <-
+  case_when(
+    r$demolition_order_wb == "yes" ~ 1,
+    r$demolition_order_wb %in% c("decline_to_answer", 'no', "do_not_know") ~ 0,
     TRUE ~ NA_real_
   )
-  
-  r$g65_i    <- r$hh_main_risks.lack_funds
-  r$g65_ii   <- r$hh_main_risks.no_longer_hosted
-  r$g65_iii  <- r$hh_main_risks.unaccepted_by_community
-  r$g65_iv   <- r$hh_main_risks.authorities_request
-  r$g65_v    <- r$hh_main_risks.owner_request
-  r$g65_vi   <- r$hh_main_risks.no_agreement
-  r$g65_vii  <- r$hh_main_risks.inadequate
-  r$g65_viii <- r$hh_main_risks.occupied
-  r$g65_ix   <- r$hh_main_risks.confiscation
-  r$g65_x    <- r$hh_main_risks.dispute
-  
-  r$g66 <- ifelse(r$hlp_document == "no", 1, 0)
-  
-  r$g67 <- case_when(
-    r$why_not_return.house_land_occupied == 1 |
-      r$why_not_return.house_damaged_destroyed == 1 ~ 1,
-    r$why_not_return.house_land_occupied == 0 &
-      r$why_not_return.house_damaged_destroyed == 0 ~ 0,
+
+
+##% of HH with members who have received information or training on the risks of ERW
+r$p8 <- ifelse(r$explosives_training == "yes" , 1, 0)
+
+
+##% of HHs in Gaza whose home has been damaged or destroyed by bombardment since 2014
+r$p9 <-
+  case_when(
+    r$building_damage_g == "yes" ~ 1,
+    r$building_damage_g %in% c("decline_to_answer", 'no', "do_not_know") ~ 0,
     TRUE ~ NA_real_
   )
-  
-  r$g68 <-
-    case_when(
-      r$hh_dispute == "yes" ~ 1,
-      r$hh_dispute %in% c('no') ~ 0,
-      TRUE ~ NA_real_
-    )
-  
-  r$g73 <- r$why_not_return.presence_of_mines
-  
-  r$g74 <- ifelse(r$risk_education %in% c('no'), 0, 1)
-  
-  
-  r$g85 <- ifelse(
-    r$`nfi_priority_needs.bedding_items` == 1 |
-      r$`nfi_priority_needs.mattresses_sleeping_mats` == 1 |
-      r$`nfi_priority_needs.blankets` == 1 |
-      r$`nfi_priority_needs.cooking_utensils` == 1 |
-      r$`nfi_priority_needs.cooking_stove` == 1 |
-      r$`nfi_priority_needs.winter_heaters` == 1 |
-      r$`nfi_priority_needs.clothing` == 1 |
-      r$`nfi_priority_needs.heating_cooking_fuel` == 1 |
-      r$`nfi_priority_needs.other` == 1,
-    1,
-    0
+
+##% of HHs whose house has been damage or destroyed as a result of the 2014 conflict
+r$sp6_i <- ifelse(r$building_damage_level_2021_g == "major_damage" | 
+                  r$building_damage_level_2021_g == "minor_damage", 1, 0)
+
+
+##% of HHs reporting damage to their current shelter as a result of the recent conflict 
+r$sp6_ii <- ifelse(r$building_damage_level_2021_g == "major_damage" | 
+                  r$building_damage_level_2021_g == "minor_damage", 1, 0)
+
+
+#% of HHs whose house is currently still damaged as a result of bombardment since 2014
+r$sp6_iii <-
+  case_when(
+    r$building_damage_level_current_g %in% c("minor", "major", "moderate", "completely") ~ 1,
+    r$building_damage_level_current_g  %in% c("decline_to_answer", "do_not_know", "none") ~ 0,
+    TRUE ~ NA_real_
   )
-  
-  r$g89 <-
-    ifelse(rowSums(
-      cbind(
-        as.numeric(r$`shelter_better.protec_hazards`),
-        as.numeric(r$`shelter_better.improve_safety`),
-        as.numeric(r$`shelter_better.improve_privacy`),
-        as.numeric(r$`shelter_better.protect_climate`),
-        as.numeric(r$`shelter_better.other`),
-        as.numeric(r$`shelter_better.none`)
-      ),
-      na.rm = T
-    ) >= 2, 1, 0)
-  
-  r$g94 <- ifelse(
-    r$sufficient_water_drinking == "yes" &
-      r$sufficient_water_cooking == "yes" &
-      r$sufficient_water_hygiene == "yes" &
-      r$sufficient_water_other == "yes",
-    1,
-    0
+
+##% of households without any capacity to repair and rehabilitate the shelter that has been damaged or destroyed
+r$sp7 <-
+  case_when(
+    r$building_damage_repair_capacity_g == "none" ~ 1,
+          is.na(r$building_damage_repair_capacity_g) ~ NA_real_, 
+    TRUE ~ 0)
+
+
+##% HH reporting to have received aid in the past 6 months
+r$aap1 <- ifelse(r$aid_received == "yes", 1, 0)
+
+
+##% HH reporting to have received aid since the beginning of the escalation in Gaza
+r$aap1_a <-
+  case_when(
+    r$aid_received_escalation_g == "yes" ~ 1,
+    r$aid_received_escalation_g  %in% c("decline_to_answer", "do_not_know", "no") ~ 0,
+    TRUE ~ NA_real_
   )
-  
-  r$g95 <- ifelse(
-    r$drinking_water_source %in%
-      c(
-        "borehole",
-        "prot_well",
-        "prot_spring",
-        "bottled_water",
-        "network_private",
-        "network_comm"
-      ),
-    1,
-    0
+
+
+##% HH reporting to have received in the past 6 months by type of aid received
+r$aap2_i    <- r$aid_type.cash
+r$aap2_ii   <- r$aid_type.food
+r$aap2_iii  <- r$aid_type.water
+r$aap2_iv   <- r$aid_type.fuel
+r$aap2_v    <- r$aid_type.shelter
+r$aap2_vi   <- r$aid_type.seasonal_items
+r$aap2_vii  <- r$aid_type.health_services
+r$aap2_viii <- r$aid_type.education_services
+r$aap2_ix   <- r$aid_type.other_non_food_items
+r$aap2_x    <- r$aid_type.protection
+
+
+##% HH satisfied with the aid that they have received in the past 6 months
+r$aap3 <-
+  case_when(
+    r$aid_satisfaction == "yes"  ~ 1,
+    r$aid_satisfaction  %in% c("decline_to_answer", "do_not_know", "no") ~ 0,
+    TRUE ~ NA_real_
   )
-  
-  r$g96 <-
-    ifelse(r$treat_drink_water %in% c("always", "sometimes"), 1, 0)
-  r$g97 <- ifelse(r$latrines %in% c("vip_pit", "flush"), 1, 0)
-  r$g98 <-
-    ifelse(r$access_hygiene_items  %in% c("satisfied", "very_satisfied"),
-           1,
-           0)
-  r$g99 <-
-    ifelse(r$access_soap == "yes" &
-             r$`use_of_soap.handwashing` == 1,
-           1,
-           0)
-  
-  r$g100_i <-
-    as.numeric(r$food_exp) / as.numeric(r$tot_expenses) * 100
-  r$g100_i <- ifelse(r$g100_i > 100, NA, 
-                         r$g100_i)
-  r$g100_ii <-
-    as.numeric(r$rent_exp) / as.numeric(r$tot_expenses) * 100
-  r$g100_i <- ifelse(r$g100_ii > 100, NA, 
-                     r$g100_ii)
-  r$g100_iii <-
-    as.numeric(r$medical_exp) / as.numeric(r$tot_expenses) * 100
-  r$g100_i <- ifelse(r$g100_iii > 100, NA, 
-                     r$g100_iii)
-  
-  r$g102 <-
-    ifelse(as.numeric(r$tot_expenses) * 0.4 <= r$food_exp, 1, 0)
-  
-  return(r)
+
+
+##Most commonly reported reasons for dissatisfaction with the aid received
+r$aap4_i    <- r$aid_not_satisfied.delays_in_delivery
+r$aap4_ii   <- r$aid_not_satisfied.quality_not_good
+r$aap4_iii  <- r$aid_not_satisfied.quantity_not_enough
+
+
+##% HH not satisfied with aid worker behavior
+r$aap5      <- case_when(r$aid_workers_satisfied == "no" ~ 1, 
+                        r$aid_received =="yes" &  r$aid_workers_satisfied == "yes" ~ 0,
+                        TRUE ~  NA_real_)
+
+
+##% of households reporting access barriers to aid as a result of the recent conflict in Gaza
+r$aap6 <- case_when(r$barriers_to_aid_g.did_not_apply == 1 ~ 0, 
+                    r$barriers_to_aid_g.did_not_apply == 0 & r$barriers_to_aid_g.do_not_know == 1 ~ 0,
+                    r$barriers_to_aid_g.did_not_apply == 0 & r$barriers_to_aid_g.decline_to_answer == 1 ~ 0, 
+                    is.na(r$barriers_to_aid_g.did_not_apply) ~ NA_real_,
+                    TRUE ~ 1)
+
+
+##% of households reporting type of humanitarian aid preferred in future distributions by type of aid
+r$aap7_i <- r$aid_preferred_g.none
+r$aap7_i <- r$aid_preferred_g.bank_tranfers
+r$aap7_i <- r$aid_preferred_g.in_kind_food
+r$aap7_i <- r$aid_preferred_g.in_kind_nfi
+r$aap7_i <- r$aid_preferred_g.mobile_money
+r$aap7_i <- r$aid_preferred_g.physical_cash
+r$aap7_i <- r$aid_preferred_g.prepaid_cards
+r$aap7_i <- r$aid_preferred_g.services
+r$aap7_i <- r$aid_preferred_g.vouchers
+
+
+##% HH with access/knowledge of complaint mechanisms 
+r$aap10 <- case_when(r$complaint_mechanisms == "yes" ~ 1, 
+                        r$complaint_mechanisms %in% c("no","do_not_know", "decline_to_answer") ~ 0,
+                        TRUE ~  NA_real_)
+
+return(r)
 }
-
-
-

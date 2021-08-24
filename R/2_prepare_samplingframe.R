@@ -4,16 +4,10 @@
 samplingframe$stratum <- to_alphanumeric_lowercase(samplingframe$stratum)
 
 #ADD STRATA NAMES TO DATA 
-response <-  response %>% mutate(strata = case_when(
-    response$location == "H2" ~ "h2",
-    response$location== "ej" ~  "ej",
-    response$location == "gaza" ~ response$hh_location_gaza,
-    response$location == "west_bank" & response$oslo_area == "area_c" 
-    ~ paste(hh_location_wb,oslo_area,sep = "_"), 
-    response$location == "west_bank" & (response$oslo_area == "area_a" |
-    response$oslo_area == "area_b") ~ "area_a_b"
-    ))
-
+response$strata <- to_alphanumeric_lowercase(response$strata)
+response$strata <- gsub('tulkarm_c', 'tulkarem_c', response$strata)
+table(response$strata)
+table(samplingframe$stratum)
 
 ##CHECK IF ALL MATCH SAMPLINGFRAME:
 `%find those not in%`<-function(x,y){x[!(x%in%y)] %>% unique}

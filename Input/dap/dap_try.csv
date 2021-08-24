@@ -1,0 +1,7 @@
+﻿Indicator Group / Sector;research.question;sub.research.question;repeat.for.variable;independent.variable;independent.variable.type;dependent.variable;dependent.variable.type;hypothesis.type
+HH Profile;% of interviews conducted with male or female participants;% of interviews conducted with male or female participants;one;strata;categorical;hh5_i;numerical;direct_reporting
+HH Profile;% of interviews conducted with male or female participants;female;one;strata;categorical;hh5_i;numerical;direct_reporting
+HH Profile;% of interviews conducted with male or female participants;male;one;strata;categorical;hh5_ii;numerical;direct_reporting
+Food Security;% of HHs by Food Consumption Score;Poor;one;strata;categorical;f1_i;numerical;direct_reporting
+Food Security;% of HHs by Food Consumption Score;Borderline;one;strata;categorical;f1_ii;numerical;direct_reporting
+Food Security;% of HHs by Food Consumption Score;Acceptable;one;strata;categorical;f1_iii;numerical;direct_reporting

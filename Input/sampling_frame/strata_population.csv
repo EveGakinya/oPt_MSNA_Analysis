@@ -1,49 +1,48 @@
 stratum,population
 Area_A_B,465191
-Bethlehem_Area_C,6158
+Bethlehem_C,6158
 H2,7713
-Hebron_Area_C,12090
-Jenin_Area_C,4123
-Jericho_Area_C,1121
-Jerusalem(j2)_Area_C,7584
-Nablus_Area_C,2404
-Qalqilya_Area_C,2594
-Ramallah_Area_C,5432
-Salfit_Area_C,1873
-Tubas_Area_C,336
-Tulkarem_Area_C,3501
-WB_Camps,20860
-Um Al-Nnaser (Al Qaraya al Badawiya),940
-Beit Lahiya,17809
-Beit Hanun,10356
-Jabalya Camp,9806
+Hebron_C,12090
+Jenin_C,4123
+Jericho_C,1121
+Jerusalem_2_C,7584
+Nablus_C,2404
+Qalqiliya_C,2594
+Ramallah_C,5432
+Salfit_C,1873
+Tubas_C,336
+Tulkarem_C,3501
+Umm_Naser,940
+Beit_Lahiya,17809
+Beit_Hanun,10356
+Jabalya_Camp,9806
 Jabalya,34236
-Ash Shati' Camp,7814
+Shati_Camp,7814
 Gaza,113260
-Madinat Ezahra,1025
-Al Mughraqa,2199
-Juhor ad Dik,881
-An Nuseirat Camp,6392
-An Nuseirat,11044
-Al Bureij Camp,5643
-Al Bureij,3120
-Az Zawayda,4801
-Deir al Balah Camp,1407
-Al Maghazi Camp,3656
-Al Maghazi,1948
-Deir al Balah,15127
-Al Musaddar,522
-Wadi as Salqa,1353
-Al Qarara,5888
-Khan Yunis Camp,8359
-Khan Yunis,41632
-Bani Suheila,8411
-A’basan al Jadida,1886
-A’basan al Kabira,5434
-Khuza'a,2312
-Al Fukhkhari,1309
+Madinat_Ezahra,1025
+Al_Mughraqa,2199
+Juhor_Deik,881
+Nuseirat_Camp,6392
+An_Nuseirat,11044
+Bureij_Camp,5643
+Al_Bureij,3120
+Az_Zawayda,4801
+Deir_Balah_Camp,1407
+Maghazi_Camp,3656
+Al_Maghazi,1948
+Deir_Balah,15127
+Al_Musaddar,522
+Wadi_Salqa,1353
+Al_Qarara,5888
+Khan_Yunis_Camp,8359
+Khan_Yunis,41632
+Bani_Suheila,8411
+Abasan_Jadida,1886
+Abasan_Kabira,5434
+Khuza,2312
+Al_Fukhari,1309
 Rafah,34141
-Rafah Camp,7260
-Al-Nnaser,1785
-Al Shokat,3267
-EJ,66186
+Rafah_Camp,7260
+An_Naser,1785
+Ash_Shoka,3267
+East_Jerusalem,66186

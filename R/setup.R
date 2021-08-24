@@ -26,7 +26,7 @@ install.packages("utils")
 
 devtools::install_github(
   "mabafaba/koboquest",
-  build_opts = c())
+  build_opts = c(), force = T)
 
   devtools::install_github(
   "boukepieter/dclogger",
@@ -42,7 +42,6 @@ devtools::install_github(
   "mabafaba/xlsformfill",
   build_opts = c(), force = T
 )
-
 
 devtools::install_github(
   "mabafaba/composr",
@@ -66,3 +65,4 @@ devtools::install_github(
 #  ref = "use_srvyr", 
 #  build_vignettes = TRUE)
 
+weighting_fun_from_samplingframe(samplinframe)
