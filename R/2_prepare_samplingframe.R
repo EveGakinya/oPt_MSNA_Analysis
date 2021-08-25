@@ -18,10 +18,29 @@ if(any(!(response$strata %in% samplingframe$stratum))){
 }
 response$strata %find those not in% samplingframe$stratum
 
+response <- response %>% drop_na(strata)
 
 if(any(is.na(response$strata))){
   warning("strata can not be NA")
 }
 
-# MERGE QUESTIONNAIRES
-questionnaire <- load_questionnaire(response,questions,choices, choices.label.column.to.use = "name")
+
+#IDENTIFY ANY FURTHER PROBLEMS WITH THE SAMPLING FRAMES MATCHING
+strata_samplingframe_issues <- as.data.frame(response[which(!response$strata %in% samplingframe$stratum), c("X_uuid", "strata")])
+if(nrow(strata_samplingframe_issues)!=0){
+  print(strata_samplingframe_issues)
+  warning("something's not right with the strata id matching!")
+}
+
+
+#STRATA WEIGHTING
+#strata_weight_fun <- map_to_weighting(sampling.frame = samplingframe,
+#                                      sampling.frame.population.column = "population",
+#                                      sampling.frame.stratum.column = "stratum",
+#                                      data.stratum.column = "strata",
+#                                      data = response)
+
+# weight_fun <- combine_weighting_functions(strata_weight_fun, clusters_weight_fun)
+#weight_fun <-strata_weight_fun
+
+#response$weights<- weight_fun(response)

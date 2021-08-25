@@ -16,7 +16,7 @@ cluster_lookup_table <- dplyr::distinct(cluster_lookup_table)
 #cluster_lookup_table <- read.csv("input/combined_sample_ids.csv", 
 #                                 stringsAsFactors=F, check.names=F)
 
-lookup_table <- read.csv("input/lookup_tables/lookup_table_names.csv", stringsAsFactors = F)
+lookup_table <- read.csv("input/lookup_tables/lookup_table_names.csv", stringsAsFactors = F, sep = ";")
 
 
 samplingframe <- load_samplingframe("./input/sampling_frame/strata_population.csv")
@@ -83,8 +83,18 @@ response$hno_strata <- case_when(response$region == "ej" ~ "ej",
                                  response$governorate_gaza == "rafah" ~ "rafah"
 )
 
+response$governorate <- case_when(response$region == "ej" ~ "ej",
+                                  response$region == "H2" ~ "h2",
+                                  response$region == "west_bank" & response$oslo_area == "C" ~ response$governorate_wb,
+                                  response$region == "west_bank" & response$oslo_area != "C" ~ "area_ab",
+                                  response$region == "gaza" ~ response$governorate_gaza
+)
+
+
 response <- response[moveme(names(response), "governorate_gaza before governorate_wb")]
 response <- response[moveme(names(response), "hno_strata after strata")]
-write.xlsx(response, 'output/response_governorate.xlsx')
+#write.xlsx(response, 'output/response_governorate.xlsx')
 
+# MERGE QUESTIONNAIRES
+questionnaire <- load_questionnaire(response,questions,choices, choices.label.column.to.use = "name")
 

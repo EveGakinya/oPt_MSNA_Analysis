@@ -50,65 +50,19 @@ R.version
   #'     3.5.add strata ids to the dataset
   #'     3.6. throw error if any don't match
 
-
-
-#IDENTIFY ANY FURTHER PROBLEMS WITH THE SAMPLING FRAMES MATCHING
-  strata_samplingframe_issues <- as.data.frame(response[which(!response$strata %in% samplingframe$stratum), c("X_uuid", "strata")])
-  if(nrow(strata_samplingframe_issues)!=0){
-    print(strata_samplingframe_issues)
-    warning("something's not right with the strata id matching!")
-  }
   
 
-####################################
-#CLUSTER WEIGHTING (NOT TO BE USED)
-  
-  #cluster_samplingframe_issues <- as.data.frame(response[which(!response$cluster_id[which(response$population_group != "idp_in_camp")] %in% samplingframe$cluster_strata_ID), c("X_uuid", "strata")])
-  #if(nrow(cluster_samplingframe_issues)!=0){
-  #  print(cluster_samplingframe_issues)
-  #  warning("something's not right with the cluster id matching!")
-  #}
-  
-  # remove records not in cluster samplingframe:
-  # nrow_before<- nrow(response)
-  # response<-response %>% filter((cluster_id %in% samplingframe$cluster_strata_ID) | population_group=="idp_in_camp")
-  
-  # if any disappeared, give a warning:
-  # if(nrow(response)!=nrow_before){
-  #   warning(paste("lost ",nrow_before-nrow(response), " records; their cluster id is not in the cluster sampling frame"))
-  # }
-  
-  # clusters_weight_fun <- map_to_weighting(sampling.frame= samplingframe,
-  #                                         sampling.frame.population.column = "pop",
-  #                                         sampling.frame.stratum.column = "cluster_strata_ID",
-  #                                         data.stratum.column = "cluster_id",
-  #                                         data = response[response$population_group!="idp_in_camp",])
-#######################################
-  
-
-#STRATA WEIGHTING
-strata_weight_fun <- map_to_weighting(sampling.frame = samplingframe,
-                                        sampling.frame.population.column = "population",
-                                        sampling.frame.stratum.column = "stratum",
-                                        data.stratum.column = "strata",
-                                        data = response)
-
-# weight_fun <- combine_weighting_functions(strata_weight_fun, clusters_weight_fun)
-weight_fun <-strata_weight_fun
-  
-response$weights<- weight_fun(response)
-  
 #CREATE NEW FUNCTION FOR WEIGHTING
 response$weights <- ifelse(response$strata == "camps_wb", 1, 
                            response$weights)
-response <- response %>% drop_na(weights)
+#response <- response %>% drop_na(weights)
  weight_fun<-function(df){
    df$weights
  }
   
 
 #RECODING OF INDICATORS
-response_with_composites <- recoding_preliminary(response)
+response_with_composites <- recoding_preliminary(response, loop)
 
 #DISAGGREGATE MALE AND FEMALE HEADED HHs
 #female_headed <- response_with_composites[which(response_with_composites$X_uuid %in% loop$X_uuid[which(loop$sex == "female" & loop$relationship == "head")]),]
@@ -122,7 +76,7 @@ response_with_composites <- recoding_preliminary(response)
 
 
 #LOAD ANALYSISPLAN
-dap_name <- "try"
+dap_name <- "oPt_preliminary"
 analysisplan <- read.csv(sprintf("input/dap/dap_%s.csv",dap_name), stringsAsFactors = F, sep = ";")
 response_with_composites$one <- "one"
 
@@ -136,7 +90,7 @@ result <- from_analysisplan_map_to_output(response_with_composites, analysisplan
                                           weighting = weight_fun,
                                           questionnaire = questionnaire, confidence_level = 0.95)
 
-name <- "tryout"
+name <- "oPt_preliminary_refugee"
 saveRDS(result,paste(sprintf("output/RDS/result_%s.RDS", name)))
 #summary[which(summary$dependent.var == "g51a"),]
 

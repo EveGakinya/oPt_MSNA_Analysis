@@ -1,81 +1,69 @@
-list_name,name,english,filter
-governorate_mcna,jenin,Jenin,
-governorate_mcna,tubas,Tubas,
-governorate_mcna,tulkaram,Tulkaram,
-governorate_mcna,nablus,Nablus,
-governorate_mcna,qalqilya,Qalqilya,
-governorate_mcna,salfit,Salfit,
-governorate_mcna,ramallah,Ramallah and Al-Bireh,
-governorate_mcna,jericho,Jericho,
-governorate_mcna,jerusalem,Jerusalem,
-governorate_mcna,bethlehem,Bethlehem,
-governorate_mcna,hebron,Hebron,
-governorate_mcna,north_gaza,North Gaza,
-governorate_mcna,gaza,Gaza,
-governorate_mcna,deir_balah,Deir al-Balah,
-governorate_mcna,khan_yunis,Khan Yunis,
-governorate_mcna,rafah,Rafah,
-locality,al.falluja,Al-Falluja,al.anbar
-locality,al.falluja,Al-Falluja,al.anbar
-locality,al.kaim,Al-Kaim,al.anbar
-locality,al.ramadi,Al-Ramadi,al.anbar
-locality,al.rutba,Al-Rutba,al.anbar
-locality,ana,Ana,al.anbar
-locality,haditha,Haditha,al.anbar
-locality,heet,Heet,al.anbar
-locality,al.basrah,Al-Basrah,al.basrah
-locality,al.kufa,Al-Kufa,al.najaf
-locality,al.najaf,Al-Najaf,al.najaf
-locality,al.diwaniya,Al-Diwaniya,al.qadissiya
-locality,al.sulaymaniyah,Al-Sulaymaniyah,al.sulaymaniyah
-locality,chamchamal,Chamchamal,al.sulaymaniyah
-locality,derbendikhan,Derbendikhan,al.sulaymaniyah
-locality,dokan,Dokan,al.sulaymaniyah
-locality,halabcha,Halabcha,al.sulaymaniyah
-locality,kalar,Kalar,al.sulaymaniyah
-locality,rania,Rania,al.sulaymaniyah
-locality,al.mussyab,Al-Mussyab,babil
-locality,al.adhamiya,Al-Adhamiya,baghdad
-locality,al.kadhmiyah,Al-Kadhmiyah,baghdad
-locality,al.karkh,Al-Karkh,baghdad
-locality,al.mahmoudiya,Al-Mahmoudiya,baghdad
-locality,al.risafa,Al-Risafa,baghdad
-locality,al.khalis,Al-Khalis,diyala
-locality,al.muqdadiya,Al-Muqdadiya,diyala
-locality,baquba,Baquba,diyala
-locality,khanaqin,Khanaqin,diyala
-locality,kifri,Kifri,diyala
-locality,al.amadiya,Al-Amadiya,duhok
-locality,duhok,Duhok,duhok
-locality,sumail,Sumail,duhok
-locality,zakho,Zakho,duhok
-locality,erbil,Erbil,erbil
-locality,koysinjaq,Koysinjaq,erbil
-locality,makhmour,Makhmour,erbil
-locality,rawanduz,Rawanduz,erbil
-locality,shaqlawa,Shaqlawa,erbil
-locality,al.hindiya,Al-Hindiya,kerbala
-locality,kerbela,Kerbela,kerbala
-locality,al.hawiga,Al-Hawiga,kirkuk
-locality,daquq,Daquq,kirkuk
-locality,dibis,Dibis,kirkuk
-locality,kirkuk,Kirkuk,kirkuk
-locality,al.kahla,Al-Kahla,maysan
-locality,al.baaj,Al-Baaj,ninewa
-locality,al.hamdaniya,Al-Hamdaniya,ninewa
-locality,al.hatra,Al-Hatra,ninewa
-locality,al.mosul,Al-Mosul,ninewa
-locality,al.shikhan,Al-Shikhan,ninewa
-locality,aqra,Aqra,ninewa
-locality,sinjar,Sinjar,ninewa
-locality,telafar,Telafar,ninewa
-locality,tilkaef,Tilkaef,ninewa
-locality,al.daur,Al-Daur,salah.al.din
-locality,al.shirqat,Al-Shirqat,salah.al.din
-locality,balad,Balad,salah.al.din
-locality,beygee,Beygee,salah.al.din
-locality,samarra,Samarra,salah.al.din
-locality,tikrit,Tikrit,salah.al.din
-locality,tooz.khurmato,Tooz Khurmato,salah.al.din
-locality,al.nasiriya,Al-Nasiriya,thi.qar
-locality,al.kut,Al-Kut,wassit
+list_name;name;english;filter
+governorate;ej;East Jerusalem;
+governorate;h2;H2;
+governorate;jenin;Jenin;
+governorate;tubas;Tubas;
+governorate;tulkarm;Tulkaram;
+governorate;nablus;Nablus;
+governorate;qalqiliya;Qalqiliya;
+governorate;salfit;Salfit;
+governorate;ramallah;Ramallah and Al-Bireh;
+governorate;jericho;Jericho;
+governorate;jerusalem_2;Jerusalem 2;
+governorate;bethlehem;Bethlehem;
+governorate;hebron;Hebron;
+governorate;north_gaza;North Gaza;
+governorate;gaza;Gaza;
+governorate;deir_balah;Deir al-Balah;
+governorate;khan_yunis;Khan Yunis;
+governorate;rafah;Rafah;
+governorate;area_a_b;Area A & B;
+governorate;camps_wb;Camps West Bank;
+strata;area_a_b;Area_A_B;area_a_b
+strata;bethlehem_c;Bethlehem_C;bethlehem
+strata;h2;H2;h2
+strata;camps_wb;Camps West Bank;camps_wb
+strata;hebron_c;Hebron_C;hebron
+strata;jenin_c;Jenin_C;jenin
+strata;jericho_c;Jericho_C;jericho
+strata;jerusalem_2_c;Jerusalem_2_C;jerusalem_2
+strata;nablus_c;Nablus_C;nablus
+strata;qalqiliya_c;Qalqiliya_C;qalqiliya
+strata;ramallah_c;Ramallah_C;ramallah
+strata;salfit_c;Salfit_C;salfit
+strata;tubas_c;Tubas_C;tubas
+strata;tulkarem_c;Tulkarem_C;tulkarm
+strata;umm_naser;Umm_Naser;north_gaza
+strata;beit_lahiya;Beit_Lahiya;north_gaza
+strata;beit_hanun;Beit_Hanun;north_gaza
+strata;jabalya_camp;Jabalya_Camp;north_gaza
+strata;jabalya;Jabalya;north_gaza
+strata;shati_camp;Shati_Camp;north_gaza
+strata;gaza;Gaza;gaza
+strata;madinat_ezahra;Madinat_Ezahra;gaza
+strata;al_mughraqa;Al_Mughraqa;gaza
+strata;juhor_deik;Juhor_Deik;gaza
+strata;nuseirat_camp;Nuseirat_Camp;deir_balah
+strata;an_nuseirat;An_Nuseirat;deir_balah
+strata;bureij_camp;Bureij_Camp;deir_balah
+strata;al_bureij;Al_Bureij;deir_balah
+strata;az_zawayda;Az_Zawayda;deir_balah
+strata;deir_balah_camp;Deir_Balah_Camp;deir_balah
+strata;maghazi_camp;Maghazi_Camp;deir_balah
+strata;al_maghazi;Al_Maghazi;deir_balah
+strata;deir_balah;Deir_Balah;deir_balah
+strata;al_musaddar;Al_Musaddar;deir_balah
+strata;wadi_salqa;Wadi_Salqa;deir_balah
+strata;al_qarara;Al_Qarara;khan_yunis
+strata;khan_yunis_camp;Khan_Yunis_Camp;khan_yunis
+strata;khan_yunis;Khan_Yunis;khan_yunis
+strata;bani_suheila;Bani_Suheila;khan_yunis
+strata;abasan_jadida;Abasan_Jadida;khan_yunis
+strata;abasan_kabira;Abasan_Kabira;khan_yunis
+strata;khuza;Khuza;khan_yunis
+strata;al_fukhari;Al_Fukhari;khan_yunis
+strata;rafah;Rafah;rafah
+strata;rafah_camp;Rafah_Camp;rafah
+strata;an_naser;An_Naser;rafah
+strata;ash_shoka;Ash_Shoka;rafah
+strata;east_jerusalem;East_Jerusalem;ej
