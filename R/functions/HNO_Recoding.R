@@ -323,32 +323,22 @@ r$s_21 <- case_when(r$shelter_issues_tot == 0 ~ 1,
 #MEAN OF MAX 50% CALCULATION
 hno <-  r[c(which(startsWith(names(r), "s_")))]      
 #Normal rounding
-hno$mean_floor <-  apply(hno, 1, function(y) {
+hno$mean <-  apply(hno, 1, function(y) {
   round2(mean(tail(sort(y), (floor(ncol(hno)/2)))))
 })
-prop.table(table(hno$mean_floor))
 
-#Ceiling rounding
-hno$mean_ceiling <-  apply(hno, 1, function(y) {
-  ceiling(mean(tail(sort(y), (floor(ncol(hno)/2)))))
-})
-prop.table(table(hno$mean_ceiling))
-#Unrounded mean
-hno$mean_unrounded <-  apply(hno, 1, function(y) {
-  (mean(tail(sort(y), (floor(ncol(hno)/2)))))
-})
 
-d <- density(hno$mean_unrounded) 
-plot(d)
-abline(v=c(2,2.5), col=c("black", "black"), lty=c(2,2), lwd=c(1, 1))
+#d <- density(hno$mean_unrounded) 
+#plot(d)
+#abline(v=c(2,2.5), col=c("black", "black"), lty=c(2,2), lwd=c(1, 1))
 
 
 #CRITICAL INDICATORS
 hno$critical <-  apply(hno, 1, function(y) {
-  max(y[c("s_8", "s_14")], na.rm = F)
+  max(y[c("s_8", "s_14")])
 })
-hno$final_severity_ceiling <- ifelse(hno$critical > hno$mean_ceiling, hno$critical, hno$mean_ceiling)
-hno$final_severity <- ifelse(hno$critical > hno$mean_floor, hno$critical, hno$mean_floor)
+hno$critical <- ifelse(is.na(hno$critical),0, hno$critical)
+hno$final_severity <- ifelse(hno$critical > hno$mean, hno$critical, hno$mean)
 
 
 #hno$final_severity <- as.character(as.numeric(hno$final_severity))
