@@ -19,7 +19,7 @@ R.version
   source("R/functions/postprocessing_functions.R")
   source("R/functions/to_alphanumeric_lowercase.R")
   source("R/functions/analysisplan_factory.R")
-  #source("R/functions/HNO_Recoding.R")
+  source("R/functions/HNO_Recoding.R")
   source("R/functions/Binary_Recoding.R")
   #source("R/functions/presentation_recoding.R")
   #source("R/functions/gimac_recoding.R")
@@ -62,7 +62,7 @@ response$weights <- ifelse(response$strata == "camps_wb", 1,
   
 
 #RECODING OF INDICATORS
-response_with_composites <- recoding_preliminary(response, loop)
+response_with_composites <- recoding_hno(response, loop)
 
 #DISAGGREGATE MALE AND FEMALE HEADED HHs
 #female_headed <- response_with_composites[which(response_with_composites$X_uuid %in% loop$X_uuid[which(loop$sex == "female" & loop$relationship == "head")]),]

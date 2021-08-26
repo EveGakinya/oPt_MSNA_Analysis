@@ -1,5 +1,4 @@
 recoding_hno <- function(r, loop) {
-  
 
 cols.nam <- c("unsafe_locations.latrines_bathing_facilities", "unsafe_locations.water_points", "unsafe_locations.distribution_areas",
               "unsafe_locations.settlements_checkpoints", "unsafe_locations.markets", "unsafe_locations.at_the_workplace", "unsafe_locations.social_community_areas",
@@ -349,7 +348,7 @@ hno$critical <-  apply(hno, 1, function(y) {
   max(y[c("s_8", "s_14")], na.rm = F)
 })
 hno$final_severity_ceiling <- ifelse(hno$critical > hno$mean_ceiling, hno$critical, hno$mean_ceiling)
-hno$final_severity_floor <- ifelse(hno$critical > hno$mean_floor, hno$critical, hno$mean_floor)
+hno$final_severity <- ifelse(hno$critical > hno$mean_floor, hno$critical, hno$mean_floor)
 
 
 #hno$final_severity <- as.character(as.numeric(hno$final_severity))
