@@ -1,14 +1,5 @@
-#update.packages(checkBuilt=TRUE, ask=FALSE)
 
-#r <- read_csv("output/cleaned_data/parent.csv")
-#r <- read.csv("hh_dataset.csv", sep = ";")
-#loop <- read.csv("ind_dataset.csv", sep = ";")
-#r <- read_excel("output/cleaned_data/msna_data_clean_all_2021-08-16.xlsx", sheet = "MSNA_2021_OPT", col_types = "text")
-#setwd("~/Documents/WORK/REACH2021/5. Data Analysis/oPt_MSNA_Analysis/Input/datasets/cleaned")
-#r <- read.csv("hh_dataset.csv", sep = ";")
-
-#recoding_preliminary <- function(r, loop) {
-r <- response
+recoding_preliminary <- function(r, loop) {
 
 #% HH with at least one individual with a disability
 ##getting the hh with at least one individual with a disability in the loop
@@ -255,6 +246,7 @@ r$h4_ix   <- r$vaccine_why_not.too_young
 r$hp7 <- case_when(r$disability_access_barriers == "yes" ~ 1,
                   r$disability_access_barriers %in% c("no", "do_not_know", "decline_to_answer") ~ 0,
                   TRUE ~ NA_real_)
+
 #Primary reason why services are inaccesible to persons with disabilities 
 r$hp8_i     <- ifelse(r$disability_access_barriers_reason == "costs_access", 1,0)
 r$hp8_ii    <- ifelse(r$disability_access_barriers_reason == "distance", 1,0)
