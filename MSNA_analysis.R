@@ -53,16 +53,18 @@ R.version
   
 
 #CREATE NEW FUNCTION FOR WEIGHTING
+#Gov level aggregation
+#response <- response %>% drop_na(weights)
 response$weights <- ifelse(response$strata == "camps_wb", 1, 
                            response$weights)
-#response <- response %>% drop_na(weights)
+
  weight_fun<-function(df){
    df$weights
  }
   
 
 #RECODING OF INDICATORS
-response_with_composites <- recoding_hno(response, loop)
+response_with_composites <- recoding_preliminary(response, loop)
 
 #DISAGGREGATE MALE AND FEMALE HEADED HHs
 #female_headed <- response_with_composites[which(response_with_composites$X_uuid %in% loop$X_uuid[which(loop$sex == "female" & loop$relationship == "head")]),]
@@ -80,6 +82,7 @@ dap_name <- "oPt_preliminary"
 analysisplan <- read.csv(sprintf("input/dap/dap_%s.csv",dap_name), stringsAsFactors = F, sep = ";")
 response_with_composites$one <- "one"
 
+
 #AGGREGATE ACROSS DISTRICTS OR/AND POPULATION GROUPS
 #analysisplan <- analysisplan_nationwide(analysisplan)
 #analysisplan <- analysisplan_pop_group_aggregated(analysisplan)
@@ -90,7 +93,7 @@ result <- from_analysisplan_map_to_output(response_with_composites, analysisplan
                                           weighting = weight_fun,
                                           questionnaire = questionnaire, confidence_level = 0.95)
 
-name <- "oPt_preliminary_refugee"
+name <- "oPt_preliminary"
 saveRDS(result,paste(sprintf("output/RDS/result_%s.RDS", name)))
 #summary[which(summary$dependent.var == "g51a"),]
 
