@@ -1,5 +1,6 @@
-recoding_hno <- function(r, loop) {
+#recoding_hno <- function(r, loop) {
 
+r <- response
 cols.nam <- c("unsafe_locations.latrines_bathing_facilities", "unsafe_locations.water_points", "unsafe_locations.distribution_areas",
               "unsafe_locations.settlements_checkpoints", "unsafe_locations.markets", "unsafe_locations.at_the_workplace", "unsafe_locations.social_community_areas",
               "unsafe_locations.public_transport", "unsafe_locations.route_to_school", "unsafe_locations.route_to_communty_centres", "unsafe_locations.other",
@@ -81,17 +82,29 @@ r$s_3 <- case_when(r$es2a == 0 ~ 1,
 
 
 ###S_4 Average time needed by school-enrolled children to access the nearest education facility (primary and secondary) / % of households reporting safety concerns in relation to their children’s education
-r$s_4 <- case_when(r$primary_school_distance == "less_15" & r$secondary_school_distance == "less_15" ~ 1,
-                   r$primary_school_distance == "less_30" & r$secondary_school_distance == "less_30" ~ 2,
-                   r$primary_school_distance == "less_hour" & r$secondary_school_distance == "less_hour" ~ 3,
-                   r$primary_school_distance %in% c("less_3hours","more_3hours") & r$secondary_school_distance %in% c("less_3hours","more_3hours") ~ 4)
+count_issues_safety <- function(df) {
+  diff <-  df[c(which(startsWith(names(df), "school_safety_concerns.")))]                   
+  diff$nr_issues <- rowSums(diff, na.rm = T)
+  diff <- diff[, c("nr_issues")]
+  df <- cbind(df, diff)
+  return(df)
+}
+r <- count_issues_safety(r)
+
+r$s_4 <- case_when(r$school_safety == "very_safe" | r$school_safety == "safe"  ~ 1,
+                   r$school_safety == "unsafe" & r$nr_issues == 1 ~ 2,
+                   r$school_safety == "unsafe" & r$nr_issues > 1 ~ 3,
+                   r$school_safety == "very_unsafe"  ~ 4)
 
 
 #S_5 % of HH school-aged children (who were previously attending school) NOT continuing teaching and learning activities remotely and in need of catch-up learning programs. 
 r$es3a <- round((as.numeric(r$remote_learning)/r$school_aged_children)*100,1)
-r$s_3 <- case_when(r$es3a == 0 ~ 1,
-                   r$es2a >= 0 & r$es2a < 100 ~ 3,
-                   r$dropout_num == r$school_aged_children ~ 5 )
+r$s_3 <- case_when(r$es3a == 100 & r$catch_up_learning == "no" ~ 1,
+                   r$es3a == 100 & r$catch_up_learning == "yes" ~ 2,
+                   r$es3a < 100 & r$catch_up_learning == "no" ~ 3,
+                   r$es3a < 100 & r$catch_up_learning == "yes" ~ 4)
+
+
 
 #FOOD SECURITY
 ##############
