@@ -1,4 +1,4 @@
-#recoding_hno <- function(r, loop) {
+recoding_hno <- function(r, loop) {
 
 r <- response
 cols.nam <- c("unsafe_locations.latrines_bathing_facilities", "unsafe_locations.water_points", "unsafe_locations.distribution_areas",
