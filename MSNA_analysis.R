@@ -8,6 +8,7 @@ R.version
   library(expss)
   library(reshape)
   library(data.table)
+  library(miceadds)
   library(questionr)
   library(koboquest) # manage kobo questionnairs
   library(kobostandards) # check inputs for inconsistencies
@@ -54,7 +55,7 @@ R.version
 
 #CREATE NEW FUNCTION FOR WEIGHTING
 #Gov level aggregation
-#response <- response %>% drop_na(weights)
+response <- response %>% drop_na(weights)
 response$weights <- ifelse(response$strata == "camps_wb", 1, 
                            response$weights)
 
@@ -64,7 +65,7 @@ response$weights <- ifelse(response$strata == "camps_wb", 1,
   
 
 #RECODING OF INDICATORS
-response_with_composites <- recoding_preliminary(response, loop)
+response_with_composites <- recoding_hno(response, loop)
 
 #DISAGGREGATE MALE AND FEMALE HEADED HHs
 #female_headed <- response_with_composites[which(response_with_composites$X_uuid %in% loop$X_uuid[which(loop$sex == "female" & loop$relationship == "head")]),]
@@ -78,14 +79,14 @@ response_with_composites <- recoding_preliminary(response, loop)
 
 
 #LOAD ANALYSISPLAN
-dap_name <- "oPt_preliminary"
+dap_name <- "oPt_hno"
 analysisplan <- read.csv(sprintf("input/dap/dap_%s.csv",dap_name), stringsAsFactors = F, sep = ";")
 response_with_composites$one <- "one"
 
 
 #AGGREGATE ACROSS DISTRICTS OR/AND POPULATION GROUPS
 #analysisplan <- analysisplan_nationwide(analysisplan)
-#analysisplan <- analysisplan_pop_group_aggregated(analysisplan)
+analysisplan <- analysisplan_pop_group_aggregated(analysisplan)
 #analysisplan$hypothesis.type <- "group_difference"
 
 
@@ -93,7 +94,7 @@ result <- from_analysisplan_map_to_output(response_with_composites, analysisplan
                                           weighting = weight_fun,
                                           questionnaire = questionnaire, confidence_level = 0.95)
 
-name <- "oPt_preliminary"
+name <- "oPt_preliminary_hno"
 saveRDS(result,paste(sprintf("output/RDS/result_%s.RDS", name)))
 #summary[which(summary$dependent.var == "g51a"),]
 

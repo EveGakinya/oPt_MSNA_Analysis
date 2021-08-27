@@ -1,0 +1,31 @@
+﻿Indicator Group / Sector;research.question;sub.research.question;repeat.for.variable;independent.variable;independent.variable.type;dependent.variable;dependent.variable.type;hypothesis.type
+Inter-sectoral severity scores;% of HHs with an inter-sectoral severity score of 1;% of HHs with an inter-sectoral severity score of 1;hno_strata;one;categorical;hno_severity_1;numerical;direct_reporting
+Inter-sectoral severity scores;% of HHs with an inter-sectoral severity score of 2;% of HHs with an inter-sectoral severity score of 2;hno_strata;one;categorical;hno_severity_2;numerical;direct_reporting
+Inter-sectoral severity scores;% of HHs with an inter-sectoral severity score of 3;% of HHs with an inter-sectoral severity score of 3;hno_strata;one;categorical;hno_severity_3;numerical;direct_reporting
+Inter-sectoral severity scores;% of HHs with an inter-sectoral severity score of 4;% of HHs with an inter-sectoral severity score of 4;hno_strata;one;categorical;hno_severity_4;numerical;direct_reporting
+Inter-sectoral severity scores;% of HHs with an inter-sectoral severity score of 5;% of HHs with an inter-sectoral severity score of 5;hno_strata;one;categorical;hno_severity_5;numerical;direct_reporting
+Disability;% of HHs with at least one member with a disability;% of HHs with at least one member with a disability;hno_strata;one;categorical;s_1;numerical;direct_reporting
+AAP;"% HH satisfied with aid received 
+% HH with access/knowledge of complaint mechanisms ";"% HH satisfied with aid received 
+% HH with access/knowledge of complaint mechanisms ";hno_strata;one;categorical;s_2;numerical;direct_reporting
+Education;% of school aged children who dropped out of school;% of school aged children who dropped out of school;hno_strata;one;categorical;s_3;numerical;direct_reporting
+Education;School safety;School safety;hno_strata;one;categorical;s_4;numerical;direct_reporting
+Education;% of HHs with school-aged children (who were previously attending school) NOT continuining teaching and learning activities remotely;% of HHs with school-aged children (who were previously attending school) NOT continuining teaching and learning activities remotely;hno_strata;one;categorical;s_5;numerical;direct_reporting
+Food Security;% of HHs relying on stress/crisis/emergency strategies to cope with a lack of food or money to buy food;% of HHs relying on stress/crisis/emergency strategies to cope with a lack of food or money to buy food;hno_strata;one;categorical;s_6;numerical;direct_reporting
+Food Security;Food Expenditure Share;Food Expenditure Share;hno_strata;one;categorical;s_7;numerical;direct_reporting
+Food Security;Food Consumption Score;Food Consumption Score;hno_strata;one;categorical;s_8;numerical;direct_reporting
+Health;"Percentage of population that can access primary healthcare within one hour’s walk from dwellings
+% of HHs facing access barriers when trying to access health services";"Percentage of population that can access primary healthcare within one hour’s walk from dwellings
+% of HHs facing access barriers when trying to access health services";hno_strata;one;categorical;s_9;numerical;direct_reporting
+Health;% of HH where at least one member (SADD) is reporting signs of distress (self-diagnosed);% of HH where at least one member (SADD) is reporting signs of distress (self-diagnosed);hno_strata;one;categorical;s_10;numerical;direct_reporting
+Protection;"% of girls / women who avoid areas because they feel unsafe"")";"% of girls / women who avoid areas because they feel unsafe"")";hno_strata;one;categorical;s_11;numerical;direct_reporting
+Protection;% of households reporting risk of eviction;% of households reporting risk of eviction;hno_strata;one;categorical;s_12;numerical;direct_reporting
+Protection;% of girls/boys engaged in child labour;% of girls/boys engaged in child labour;hno_strata;one;categorical;s_13;numerical;direct_reporting
+WASH;% of households with access to a sufficient quantity of water for drinking and domestic purposes;% of households with access to a sufficient quantity of water for drinking and domestic purposes;hno_strata;one;categorical;s_14;numerical;direct_reporting
+WASH;% of households reporting relying on coping strategies to adapt to a lack of water;% of households reporting relying on coping strategies to adapt to a lack of water;hno_strata;one;categorical;s_15;numerical;direct_reporting
+WASH;% of people with inadequate access to sanitation services;% of people with inadequate access to sanitation services;hno_strata;one;categorical;s_16;numerical;direct_reporting
+Livelihoods;% of adults unemployed and seeking work;% of adults unemployed and seeking work;hno_strata;one;categorical;s_17;numerical;direct_reporting
+Livelihoods;% of HHs unable to afford basic needs;% of HHs unable to afford basic needs;hno_strata;one;categorical;s_18;numerical;direct_reporting
+Livelihoods;% of HHs whose average monthly HH income per HH member was less than __ NIS;% of HHs whose average monthly HH income per HH member was less than __ NIS;hno_strata;one;categorical;s_19;numerical;direct_reporting
+Shelter;Average number of household members per room;Average number of household members per room;hno_strata;one;categorical;s_20;numerical;direct_reporting
+Shelter;% of HHs whose shelter has any kind of damage or defects;% of HHs whose shelter has any kind of damage or defects;hno_strata;one;categorical;s_21;numerical;direct_reporting

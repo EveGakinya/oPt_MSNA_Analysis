@@ -99,7 +99,7 @@ r$s_4 <- case_when(r$school_safety == "very_safe" | r$school_safety == "safe"  ~
 
 #S_5 % of HH school-aged children (who were previously attending school) NOT continuing teaching and learning activities remotely and in need of catch-up learning programs. 
 r$es3a <- round((as.numeric(r$remote_learning)/r$school_aged_children)*100,1)
-r$s_3 <- case_when(r$es3a == 100 & r$catch_up_learning == "no" ~ 1,
+r$s_5 <- case_when(r$es3a == 100 & r$catch_up_learning == "no" ~ 1,
                    r$es3a == 100 & r$catch_up_learning == "yes" ~ 2,
                    r$es3a < 100 & r$catch_up_learning == "no" ~ 3,
                    r$es3a < 100 & r$catch_up_learning == "yes" ~ 4)
