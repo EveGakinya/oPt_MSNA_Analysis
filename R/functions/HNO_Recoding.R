@@ -3,7 +3,7 @@ recoding_hno <- function(r, loop) {
 r <- response
 cols.nam <- c("unsafe_locations.latrines_bathing_facilities", "unsafe_locations.water_points", "unsafe_locations.distribution_areas",
               "unsafe_locations.settlements_checkpoints", "unsafe_locations.markets", "unsafe_locations.at_the_workplace", "unsafe_locations.social_community_areas",
-              "unsafe_locations.public_transport", "unsafe_locations.route_to_school", "unsafe_locations.route_to_communty_centres", "unsafe_locations.other",
+              "unsafe_locations.public_transport", "unsafe_locations.route_to_school", "unsafe_locations.route_to_communty_centres",
               "unsafe_locations.seeking_humanitarian_aid", "under_18_working_boys", "under_18_working_girls", "shelter_issues.roof_opening_cracks", "shelter_issues.broken_windows",
               "shelter_issues.roof_partially_collapsed", "shelter_issues.collapsed_walls", "shelter_issues.damaged_floors","shelter_issues.doors_broken","shelter_issues.doors_windows_missing",
               "shelter_issues.walls_small_cracks", "shelter_issues.walls_large_cracks","shelter_issues.structural_damage", "shelter_issues.total_structural_collapse",
@@ -17,24 +17,27 @@ r <- r %>%
   mutate(unsafe_locations_tot = sum(unsafe_locations.latrines_bathing_facilities,unsafe_locations.water_points,unsafe_locations.distribution_areas,
                                     unsafe_locations.settlements_checkpoints,unsafe_locations.markets,unsafe_locations.at_the_workplace,
                                     unsafe_locations.social_community_areas,unsafe_locations.public_transport,unsafe_locations.route_to_school,
-                                    unsafe_locations.route_to_communty_centres,unsafe_locations.other,unsafe_locations.seeking_humanitarian_aid, na.rm = T),
-         tot_under_18_working = sum(under_18_working_boys,under_18_working_girls, na.rm = T),
+                                    unsafe_locations.route_to_communty_centres,unsafe_locations.seeking_humanitarian_aid, na.rm = F),
+         tot_under_18_working = sum(under_18_working_boys,under_18_working_girls, na.rm = F),
          shelter_issues_tot = sum(shelter_issues.roof_opening_cracks,shelter_issues.roof_partially_collapsed,shelter_issues.broken_windows,
                                   shelter_issues.doors_broken,shelter_issues.doors_windows_missing,shelter_issues.walls_small_cracks,
                                   shelter_issues.walls_large_cracks,shelter_issues.collapsed_walls,shelter_issues.damaged_floors,shelter_issues.structural_damage,
                                   shelter_issues.total_structural_collapse,shelter_issues.foundation_shifted,shelter_issues.system_damage,
-                                  shelter_issues.electricity_damage,na.rm = T),
-         school_aged_children = sum(hh_size_boys_5_10,hh_size_boys_11_15,hh_size_boys_16_17,hh_size_girls_5_10,hh_size_girls_11_15,hh_size_girls_16_17, na.rm = T))
+                                  shelter_issues.electricity_damage,na.rm = F),
+         school_aged_children = sum(hh_size_boys_5_10,hh_size_boys_11_15,hh_size_boys_16_17,hh_size_girls_5_10,hh_size_girls_11_15,hh_size_girls_16_17, na.rm = F))
 
+
+# ^- olivier -/- do we really wnat to omit the missing values? if all missing the row is zero, i would suggest to review
+# ^- Evelyn -/- Changed remove NAs to False
 
 #S_1 DISABILITY
 #############
 count_difficulty_level <- function(df) {
   diff <-  df[c(which(startsWith(names(df), "difficulty_")))]                   
-  diff$no_diff <- rowSums(diff == "no_difficulty", na.rm = F)
-  diff$some_diff <- rowSums(diff == "some_difficulty", na.rm = F)
-  diff$lot_diff <- rowSums(diff == "a_lot_of_difficulty", na.rm = F)
-  diff$cannot_diff <- rowSums(diff == "cannot_do_at_all", na.rm = F)
+  diff$no_diff <- rowSums(diff == "no_difficulty", na.rm = T)
+  diff$some_diff <- rowSums(diff == "some_difficulty", na.rm = T)
+  diff$lot_diff <- rowSums(diff == "a_lot_of_difficulty", na.rm = T)
+  diff$cannot_diff <- rowSums(diff == "cannot_do_at_all", na.rm = T)
   diff <- diff[, c("no_diff", "some_diff", "lot_diff", "cannot_diff")]
   df <- cbind(df, diff)
   return(df)
@@ -60,7 +63,7 @@ r$s_1 <- case_when(r$some_diff == 0 & r$lot_diff == 0 & r$cannot_diff == 0 ~ 1,
                    r$cannot_diff >= 4 ~ 5, 
                    is.na(r$no_diff) & is.na(r$some_diff) & is.na(r$lot_diff) & is.na(r$cannot_diff) ~ 1)
 
-
+# ^- olivier -/- a mistake in the excel table, so i am not sure that it is accurate
 
 #S_2 AAP
 #% HH satisfied with aid received 
@@ -71,7 +74,8 @@ r$s_2 <- case_when(
   r$aid_satisfaction == "no" & r$complaint_mechanisms == "yes" ~ 2,
   r$aid_satisfaction == "no" & r$complaint_mechanisms == "no" ~ 3,
 )
-
+# ^- olivier -/- can you be satisfied and not aware?
+# ^- evelyn -/- yes, one can be satisfied and not aware 
 
 ###Education
 ###S_3 calculating the percentage of the school aged children who are out of school
@@ -98,12 +102,19 @@ r$s_4 <- case_when(r$school_safety == "very_safe" | r$school_safety == "safe"  ~
 
 
 #S_5 % of HH school-aged children (who were previously attending school) NOT continuing teaching and learning activities remotely and in need of catch-up learning programs. 
+r$remote_learning <- ifelse(r$remote_learning > r$school_aged_children, NA, r$remote_learning)
+
 r$es3a <- round((as.numeric(r$remote_learning)/r$school_aged_children)*100,1)
 r$s_5 <- case_when(r$es3a == 100 & r$catch_up_learning == "no" ~ 1,
                    r$es3a == 100 & r$catch_up_learning == "yes" ~ 2,
                    r$es3a < 100 & r$catch_up_learning == "no" ~ 3,
-                   r$es3a < 100 & r$catch_up_learning == "yes" ~ 4)
+                   r$es3a < 100 & r$catch_up_learning == "yes" ~ 4,
+                   True ~ NA_real_)
 
+
+r$es3a[which(r$es3a > 100)]
+# ^- olivier -/- one is more than 100, please check back the data
+# ^- evelyn -/- changed all remote_learning greater than school_aged-children to NA
 
 
 #FOOD SECURITY
@@ -138,34 +149,51 @@ r$emergency <-
     0
   )
 
+r$emergency_1 <- ifelse(r$coping_children_dropout %in% c("no_already_did", "yes"), 1, 0)
+r$emergency_2 <- ifelse(r$coping_risky_behaviour %in% c("no_already_did", "yes"), 1, 0)
+r$emergency_3 <- ifelse(r$coping_migration %in% c("no_already_did", "yes"), 1, 0)
+r$emergency_4 <- ifelse(r$coping_forced_marriage %in% c("no_already_did", "yes"), 1, 0)
+r$emergency_count <- rowSums(r[, c("emergency_1", "emergency_2", "emergency_3", "emergency_4")], na.rm = T)
+
 r$s_6 <- case_when(
   r$stress == 0 & r$crisis == 0 & r$emergency == 0 ~ 1,
   r$stress == 1 & r$crisis == 0 & r$emergency == 0 ~ 2,
   r$crisis == 1 & r$emergency == 0 ~ 3,
-  r$emergency == 1 ~ 4
+  r$emergency == 1 ~ 4,
+  r$emergency_count > 1 ~ 5
 )
 
+# ^- olivier -/- near exaustion is missing
+# ^- evelyn -/- thanks, variable added.
 
 ##S_7 Food Expenditure share
+r$food_exp <-ifelse(r$food_exp >= r$tot_expenses, NA, r$food_exp)
 r$food_share <- round((as.numeric(r$food_exp)/ as.numeric(r$tot_expenses))*100 , 1)
 r$food_share <- ifelse(r$food_share > 100, NA, 
                  r$food_share)
+
+# ^- olivier -/- 46 over 100, 136 are 100 or more please check back teh data
+# ^- evelyn -/- changed all food_exp greater than total expenses to NA
+
 
 r$s_7 <- case_when(
   r$food_share < 50 ~ 1,
   r$food_share >= 50 & r$food_share < 65 ~ 2,
   r$food_share >= 65 & r$food_share < 75 ~ 3,
   r$food_share >= 75 & r$food_share < 85 ~ 4,
-  r$food_share >= 85 & r$food_share < 100 ~ 5
+  r$food_share >= 85 & r$food_share <= 100 ~ 5
 )
-
+# ^- olivier -/- 100 is not included
+# ^- evelyn -/- updated, thanks.
 
 ##Food Consumption Score
 ##S_8 Food Security
 r$fcs <- 
   (as.numeric(r$cereals)*2) +(as.numeric(r$nuts_seed)*3) +(as.numeric(r$milk_dairy)*4) + (as.numeric(r$meat)*4)+ 
-  as.numeric(r$vegetables) + as.numeric(r$fruits) + (as.numeric(r$oil_fats)*0.5) + (as.numeric(r$sweets))
+  as.numeric(r$vegetables) + as.numeric(r$fruits) + (as.numeric(r$oil_fats)*0.5) + (as.numeric(r$sweets)*0.5)
 
+# ^- olivier -/- there is mistake here the max should be 112 - it goes up  to 115.5
+# ^- evelyn -/- calculation updated
 
 r$poor_fcs <- ifelse(r$fcs <= 21, 1,0)
 r$borderline_fcs <- ifelse(r$fcs > 21 & r$fcs <=35,1,0)
@@ -193,12 +221,14 @@ r$tot_distressed <- as.numeric(r$child_distress_number) + as.numeric(r$adult_dis
 r$per_distressed <- round((r$tot_distressed/as.numeric(r$hh_size))*100, 1)
 
 r$s_10 = case_when(
-  r$per_distressed >= 0 & r$per_distressed <= 19 ~ 2,
-  r$per_distressed >= 20 & r$per_distressed <= 39 ~ 3,
-  r$per_distressed >= 40 & r$per_distressed <= 59 ~ 4,
+  r$per_distressed >= 0 & r$per_distressed < 20 ~ 2,
+  r$per_distressed >= 20 & r$per_distressed < 40 ~ 3,
+  r$per_distressed >= 40 & r$per_distressed < 60 ~ 4,
   r$per_distressed >= 60 ~ 5,
   TRUE ~ 1)
 
+# ^- olivier -/- there is a gap between 19-20, 39-40, 59-60 change for   r$per_distressed >= 0 & r$per_distressed < 20 ~ 2, etc.
+# ^- evelyn -/- recoding updated
 
 #S_11 % of girls / women who avoid areas because they feel unsafe")
 r$s_11 <- case_when(
@@ -208,6 +238,9 @@ r$s_11 <- case_when(
                   r$unsafe_locations_tot == 3 ~ 4,
                   r$unsafe_locations_tot >= 4 ~ 5
 )
+
+# ^- olivier -/- i think you should remove other from the unsafe location?
+# ^- evelyn -/- I have removed the variable.
 
 
 #S_12 % of households reporting risk of eviction
@@ -307,6 +340,8 @@ r$s_18 <- case_when(r$how_much_debt == 0 ~ 1,
                    r$reasons_for_debt == "education"| r$reasons_for_debt == "basic_household_expenditure" ~ 4,
                    r$reasons_for_debt == "healthcare" | r$reasons_for_debt == "food" ~ 5)
 
+# ^- olivier -/- there is nto any 5 in the framework
+# ^- evelyn -/- i have updated the framework.
 
 #S_19 % of HHs whose average monthly HH income per HH member was less than __ NIS
 r$l19a <- round((as.numeric(r$tot_income)/as.numeric(r$hh_size)),2)

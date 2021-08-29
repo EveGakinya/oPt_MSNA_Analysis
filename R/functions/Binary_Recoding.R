@@ -123,7 +123,7 @@ r$hhd3 <- case_when(r$currently_hosting_displaced_g == "yes" ~ 1,
 ##Food Security
 r$fcs <- 
   (as.numeric(r$cereals)*2) +(as.numeric(r$nuts_seed)*3) +(as.numeric(r$milk_dairy)*4) + (as.numeric(r$meat)*4)+ 
-  as.numeric(r$vegetables) + as.numeric(r$fruits) + (as.numeric(r$oil_fats)*0.5) + (as.numeric(r$sweets))
+  as.numeric(r$vegetables) + as.numeric(r$fruits) + (as.numeric(r$oil_fats)*0.5) + (as.numeric(r$sweets)*0.5)
 
 
 r$poor_fcs <- ifelse(r$fcs <= 21, 1,0)
@@ -733,27 +733,34 @@ r$l6 <- case_when(r$debt_due_to_covid == "yes" ~ 1,
 
 
 ##Average HH expenditure share by type of expenditure
+r$food_exp <-ifelse(r$food_exp >= r$tot_expenses, NA, r$food_exp)
 r$food_share <- round((as.numeric(r$food_exp)/ as.numeric(r$tot_expenses)), 1)
 r$l7_i <- ifelse(r$food_share > 100, NA, 
                r$food_share)
 
+
+r$water_exp <-ifelse(r$water_exp >= r$tot_expenses, NA, r$water_exp)
 r$water_share <- round((as.numeric(r$water_exp)/ as.numeric(r$tot_expenses)), 1)
 
 r$l7_ii <- ifelse(r$water_share > 100, NA, 
                  r$water_share)
 
+r$rent_exp <-ifelse(r$rent_exp >= r$tot_expenses, NA, r$rent_exp)
 r$rent_share <- round((as.numeric(r$rent_exp)/ as.numeric(r$tot_expenses)), 1)
 r$l7_iii <- ifelse(r$rent_share > 100, NA, 
                   r$rent_share)
 
+r$medical_exp <-ifelse(r$medical_exp >= r$tot_expenses, NA, r$medical_exp)
 r$medical_share <- round((as.numeric(r$medical_exp)/ as.numeric(r$tot_expenses)), 1)
 r$l7_iv <- ifelse(r$medical_share > 100, NA, 
                    r$medical_share)
 
+r$debt_repayment <-ifelse(r$debt_repayment >= r$tot_expenses, NA, r$debt_repayment)
 r$debt_share <- round((as.numeric(r$debt_repayment)/ as.numeric(r$tot_expenses)), 1)
 r$l7_v <- ifelse(r$debt_share > 100, NA, 
                   r$debt_share)
 
+r$fuel_exp <-ifelse(r$fuel_exp >= r$tot_expenses, NA, r$fuel_exp)
 r$fuel_share <- round((as.numeric(r$fuel_exp)/ as.numeric(r$tot_expenses)), 1)
 r$l7_vi <- ifelse(r$fuel_share > 100, NA, 
                   r$fuel_share)
