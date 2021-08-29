@@ -31,10 +31,10 @@ r <- r %>%
 #############
 count_difficulty_level <- function(df) {
   diff <-  df[c(which(startsWith(names(df), "difficulty_")))]                   
-  diff$no_diff <- rowSums(diff == "no_difficulty", na.rm = T)
-  diff$some_diff <- rowSums(diff == "some_difficulty", na.rm = T)
-  diff$lot_diff <- rowSums(diff == "a_lot_of_difficulty", na.rm = T)
-  diff$cannot_diff <- rowSums(diff == "cannot_do_at_all", na.rm = T)
+  diff$no_diff <- rowSums(diff == "no_difficulty", na.rm = F)
+  diff$some_diff <- rowSums(diff == "some_difficulty", na.rm = F)
+  diff$lot_diff <- rowSums(diff == "a_lot_of_difficulty", na.rm = F)
+  diff$cannot_diff <- rowSums(diff == "cannot_do_at_all", na.rm = F)
   diff <- diff[, c("no_diff", "some_diff", "lot_diff", "cannot_diff")]
   df <- cbind(df, diff)
   return(df)
