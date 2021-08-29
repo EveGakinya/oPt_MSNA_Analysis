@@ -109,7 +109,7 @@ r$s_5 <- case_when(r$es3a == 100 & r$catch_up_learning == "no" ~ 1,
                    r$es3a == 100 & r$catch_up_learning == "yes" ~ 2,
                    r$es3a < 100 & r$catch_up_learning == "no" ~ 3,
                    r$es3a < 100 & r$catch_up_learning == "yes" ~ 4,
-                   True ~ NA_real_)
+                   TRUE ~ NA_real_)
 
 
 r$es3a[which(r$es3a > 100)]
