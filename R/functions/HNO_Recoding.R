@@ -1,6 +1,6 @@
 recoding_hno <- function(r, loop) {
 
-r <- response
+#r <- response
 cols.nam <- c("unsafe_locations.latrines_bathing_facilities", "unsafe_locations.water_points", "unsafe_locations.distribution_areas",
               "unsafe_locations.settlements_checkpoints", "unsafe_locations.markets", "unsafe_locations.at_the_workplace", "unsafe_locations.social_community_areas",
               "unsafe_locations.public_transport", "unsafe_locations.route_to_school", "unsafe_locations.route_to_communty_centres",
@@ -234,6 +234,7 @@ r$s_10 = case_when(
 
 #S_11 % of girls / women who avoid areas because they feel unsafe")
 r$s_11 <- case_when(
+                  r$women_feel_unsafe == "no" ~ 1,
                   r$unsafe_locations_tot == 0 ~ 1,
                   r$unsafe_locations_tot == 1 ~ 2,
                   r$unsafe_locations_tot == 2 ~ 3,
@@ -260,6 +261,7 @@ r$p13a <- ifelse(r$tot_children == r$tot_under_18_working, 1, 0)
 
 #S_13 % of girls / boys engaged in child labour
 r$s_13 <- case_when(
+                is.na(r$tot_under_18_working) & as.numeric(r$tot_children) > 0 ~ 1,
                 r$tot_under_18_working == 0 ~ 1,
                 r$tot_under_18_working == 1 ~ 3,
                 r$tot_under_18_working > 1 ~ 4,
@@ -337,9 +339,9 @@ r$s_17 <- case_when(r$s17a<= 40 & r$s17a > 0 ~ 2,
 #S_18 % of HHs unable to afford basic needs
 r$s_18 <- case_when(r$how_much_debt == 0 ~ 1,
                    r$reasons_for_debt == "income_generating_activities" |r$reasons_for_debt == "business_related" |
-                    r$reasons_for_debt == "clothing_or_NFI"| r$reasons_for_debt == "major_purchase"  ~ 2,
+                    r$reasons_for_debt == "clothing_or_NFI"| r$reasons_for_debt == "major_purchase" ~ 2,
                    r$reasons_for_debt == "weddings"| r$reasons_for_debt == "reconstruction" ~ 3,
-                   r$reasons_for_debt == "education"| r$reasons_for_debt == "basic_household_expenditure" ~ 4,
+                   r$reasons_for_debt == "education"| r$reasons_for_debt == "basic_household_expenditures" ~ 4,
                    r$reasons_for_debt == "healthcare" | r$reasons_for_debt == "food" ~ 5)
 
 # ^- olivier -/- there is nto any 5 in the framework
@@ -359,7 +361,7 @@ r$s2 <- round((as.numeric(r$hh_size) / as.numeric(r$num_of_rooms)),1)
 r$s_20 <- case_when(r$s2 <= 1 ~ 1,
                    r$s2 > 1 & r$s2 <= 1.99 ~2,
                    r$s2 > 2 & r$s2 <= 2.99 ~ 3,
-                   r$s2 > 3 & r$s2 <= 7 ~ 4,
+                   r$s2 > 3  ~ 4,
                    TRUE ~ NA_real_)
 
 #S_21 % of HHs whose shelter has any kind of damage or defects
@@ -376,7 +378,10 @@ hno <-  r[c(which(startsWith(names(r), "s_")))]
 hno$mean <-  apply(hno, 1, function(y) {
   round2(mean(tail(sort(y), (floor(ncol(hno)/2)))))
 })
-
+#Rounding up
+#hno$mean <-  apply(hno, 1, function(y) {
+#  ceiling(mean(tail(sort(y), (floor(ncol(hno)/2)))))
+#})
 
 #d <- density(hno$mean_unrounded) 
 #plot(d)
