@@ -105,7 +105,8 @@ result <- from_analysisplan_map_to_output(response_with_composites, analysisplan
 name <- "oPt_hno_strata_refugee_disagg"
 saveRDS(result,paste(sprintf("output/RDS/result_%s.RDS", name)))
 #summary[which(summary$dependent.var == "g51a"),]
-
+response_with_composites$strata <- ifelse(response_with_composites$strata == "area_a_b", "area_ab", 
+                                          response_with_composites$strata)
 summary <- bind_rows(lapply(result[[1]], function(x){x$summary.statistic}))
 write.csv(summary, sprintf("output/raw_results/raw_results_%s.csv", name), row.names=F)
 summary <- read.csv(sprintf("output/raw_results/raw_results_%s.csv", name), stringsAsFactors = F)
