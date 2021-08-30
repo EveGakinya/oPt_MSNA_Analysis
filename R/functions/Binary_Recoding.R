@@ -82,14 +82,12 @@ r$hh5_ii <- ifelse(r$gender_respondent == "male", 1, 0)
 
 
 ##% of female headed households
-r$hh6_i <- case_when( r$gender_hhh == "female" ~ 1,
-                    r$gender_hhh == "male" ~ 0,
-                    TRUE ~ NA_real_)
+r$hh6_i <- case_when( r$hhh == "yes" & r$gender_respondent == "female"| r$gender_hhh == "female" ~ 1,
+                      TRUE ~ 0)
 
 ##% of male headed households
-r$hh6_i <- case_when( r$gender_hhh == "male" ~ 1,
-                      r$gender_hhh == "female" ~ 0,
-                      TRUE ~ NA_real_)
+r$hh6_ii <- case_when( (r$hhh == "yes" & r$gender_respondent == "male") | r$gender_hhh == "male" ~ 1,
+                       TRUE ~ 0)
 
 ##% of refugee households
 r$hh8 <- ifelse(r$refugee_status == "yes", 1, 0)
