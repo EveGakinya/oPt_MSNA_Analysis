@@ -72,7 +72,8 @@ r$s_1 <- case_when(r$some_diff == 0 & r$lot_diff == 0 & r$cannot_diff == 0 ~ 1,
 ##############
 r$s_2 <- case_when(
   r$aid_satisfaction == "yes" & r$complaint_mechanisms == "yes" ~ 1,
-  r$aid_satisfaction == "no" & r$complaint_mechanisms == "yes" ~ 2,
+  r$aid_satisfaction == "yes" & r$complaint_mechanisms == "no" ~ 2,
+  r$aid_satisfaction == "no" & r$complaint_mechanisms == "yes" ~ 4,
   r$aid_satisfaction == "no" & r$complaint_mechanisms == "no" ~ 3,
 )
 # ^- olivier -/- can you be satisfied and not aware?
