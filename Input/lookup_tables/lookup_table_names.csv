@@ -17,9 +17,15 @@ governorate;gaza;Gaza;
 governorate;deir_balah;Deir al-Balah;
 governorate;khan_yunis;Khan Yunis;
 governorate;rafah;Rafah;
-governorate;area_a_b;Area A & B;
+governorate;area_ab;Area A & B;
+governorate;area_c;Area C;
 governorate;camps_wb;Camps West Bank;
-strata;area_a_b;Area_A_B;area_a_b
+governorate;west_bank;West Bank;
+governorate;H2;H2;
+strata;H2;H2;H2
+strata;west_bank;West Bank;west_bank
+strata;area_ab;Area_A_B;area_ab
+strata;area_c;Area_C;area_c
 strata;bethlehem_c;Bethlehem_C;bethlehem
 strata;h2;H2;h2
 strata;camps_wb;Camps West Bank;camps_wb

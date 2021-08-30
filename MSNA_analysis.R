@@ -93,7 +93,7 @@ analysisplan$repeat.for.variable <- "region"
 
 #AGGREGATE ACROSS DISTRICTS OR/AND POPULATION GROUPS
 #analysisplan <- analysisplan_nationwide(analysisplan)
-#analysisplan <- analysisplan_pop_group_aggregated(analysisplan)
+analysisplan <- analysisplan_pop_group_aggregated(analysisplan)
 #analysisplan$hypothesis.type <- "group_difference"
 
 

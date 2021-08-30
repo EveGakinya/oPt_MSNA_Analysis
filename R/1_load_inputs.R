@@ -90,6 +90,8 @@ response$governorate <- case_when(response$region == "ej" ~ "ej",
                                   response$region == "gaza" ~ response$governorate_gaza
 )
 
+response$strata <- ifelse(response$strata == "area_a_b", "area_ab", 
+                          response$strata)
 
 response <- response[moveme(names(response), "governorate_gaza before governorate_wb")]
 response <- response[moveme(names(response), "hno_strata after strata")]
