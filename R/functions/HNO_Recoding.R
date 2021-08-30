@@ -110,7 +110,10 @@ r$s_5 <- case_when(r$es3a == 100 & r$catch_up_learning == "no" ~ 1,
                    r$es3a < 100 & r$catch_up_learning == "no" ~ 3,
                    r$es3a < 100 & r$catch_up_learning == "yes" ~ 4,
                    TRUE ~ NA_real_)
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
 r$es3a[which(r$es3a > 100)]
 # ^- olivier -/- one is more than 100, please check back the data
