@@ -64,6 +64,7 @@ r$s_1 <- case_when(r$some_diff == 0 & r$lot_diff == 0 & r$cannot_diff == 0 ~ 1,
                    is.na(r$no_diff) & is.na(r$some_diff) & is.na(r$lot_diff) & is.na(r$cannot_diff) ~ 1)
 
 # ^- olivier -/- a mistake in the excel table, so i am not sure that it is accurate
+# ^- michael -/- The mistake is in the excel table. This is actually a JIAF indicator, so these calculations here are aligned with the JIAF threholds
 
 #S_2 AAP
 #% HH satisfied with aid received 
@@ -75,7 +76,7 @@ r$s_2 <- case_when(
   r$aid_satisfaction == "no" & r$complaint_mechanisms == "no" ~ 3,
 )
 # ^- olivier -/- can you be satisfied and not aware?
-# ^- evelyn -/- yes, one can be satisfied and not aware 
+# ^- evelyn -/- yes, one can be satisfied with the received and not aware of complaint mechanisms
 
 ###Education
 ###S_3 calculating the percentage of the school aged children who are out of school
