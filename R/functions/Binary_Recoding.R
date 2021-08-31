@@ -889,15 +889,18 @@ r$p9 <-
   )
 
 ##% of HHs whose house has been damage or destroyed as a result of the 2014 conflict
-r$sp6_i <- ifelse(r$building_damage_level_2021_g == "major_damage" | 
-                  r$building_damage_level_2021_g == "minor_damage", 1, 0)
+
+r$sp6_i <- case_when(r$building_damage_level_2014_g %in% c("major_damage","minor_damage")~ 1,
+                     r$building_damage_level_2014_g == "do_not_know" ~ 0,
+                     r$region == "gaza" & is.na(r$building_damage_level_2014_g) ~ 0,
+                     TRUE ~ NA_real_)
 
 
 ##% of HHs reporting damage to their current shelter as a result of the recent conflict 
-r$sp6_ii <- ifelse(r$building_damage_level_2021_g == "major_damage" | 
-                  r$building_damage_level_2021_g == "minor_damage", 1, 0)
 
-
+r$sp6_ii <- case_when(r$building_damage_level_2021_g %in% c("major_damage","minor_damage")~ 1,
+                                     r$region == "gaza" & is.na(r$building_damage_level_2021_g) ~ 0,
+                                     TRUE ~ NA_real_)
 #% of HHs whose house is currently still damaged as a result of bombardment since 2014
 r$sp6_iii <-
   case_when(
