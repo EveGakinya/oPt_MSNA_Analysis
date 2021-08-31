@@ -385,11 +385,11 @@ recoding_hno_coping <- function(r, loop) {
   #MEAN OF MAX 50% CALCULATION
   hno_coping <-  r[c("s_2", "s_6", "s_15", "s_16")]      
   #Normal rounding
-  hno$final_severity_coping <-  apply(hno, 1, function(y) {
-    round2(mean(tail(sort(y), (floor(ncol(hno)/2)))))
+  hno_coping$final_severity_coping <-  apply(hno_coping, 1, function(y) {
+    round2(mean(tail(sort(y), (floor(ncol(hno_coping)/2)))))
   })
   #HNO FINAL SEVERITY | COPING
-  r$final_severity_coping <- hno$final_severity_coping
+  r$final_severity_coping <- hno_coping$final_severity_coping
   r$hno_severity_coping_1 <- ifelse(r$final_severity_coping == 1, 1,0)
   r$hno_severity_coping_2 <- ifelse(r$final_severity_coping == 2, 1,0)
   r$hno_severity_coping_3 <- ifelse(r$final_severity_coping == 3, 1,0)
@@ -402,11 +402,11 @@ recoding_hno_coping <- function(r, loop) {
   #MEAN OF MAX 50% CALCULATION
   hno_wellbeing <-  r[c("s_1", "s_11", "s_12", "s_13")]      
   #Normal rounding
-  hno$final_severity_wellbeing <-  apply(hno, 1, function(y) {
-    round2(mean(tail(sort(y), (floor(ncol(hno)/2)))))
+  hno_wellbeing$final_severity_wellbeing <-  apply(hno_wellbeing, 1, function(y) {
+    round2(mean(tail(sort(y), (floor(ncol(hno_wellbeing)/2)))))
   })
   #HNO FINAL SEVERITY | WELLBEING
-  r$hno_severity_wellbeing <- hno$final_severity_wellbeing
+  r$final_severity_wellbeing <- hno_wellbeing$final_severity_wellbeing
   r$hno_severity_wellbeing_1 <- ifelse(r$final_severity_wellbeing == 1, 1,0)
   r$hno_severity_wellbeing_2 <- ifelse(r$final_severity_wellbeing == 2, 1,0)
   r$hno_severity_wellbeing_3 <- ifelse(r$final_severity_wellbeing == 3, 1,0)
@@ -420,11 +420,11 @@ recoding_hno_coping <- function(r, loop) {
   hno_living <-  r[c("s_3", "s_4", "s_5", "s_7", "s_8", "s_9", "s_10", "s_14", "s_17", "s_18", "s_19",
                      "s_20", "s_21")]      
   #Normal rounding
-  hno$final_severity_living <-  apply(hno, 1, function(y) {
-    round2(mean(tail(sort(y), (floor(ncol(hno)/2)))))
+  hno_living$final_severity_living <-  apply(hno_living, 1, function(y) {
+    round2(mean(tail(sort(y), (floor(ncol(hno_living)/2)))))
   })
   #HNO FINAL SEVERITY | LIVING
-  r$hno_severity_living <- hno$final_severity_living
+  r$final_severity_living <- hno_living$final_severity_living
   r$hno_severity_living_1 <- ifelse(r$final_severity_living == 1, 1,0)
   r$hno_severity_living_2 <- ifelse(r$final_severity_living == 2, 1,0)
   r$hno_severity_living_3 <- ifelse(r$final_severity_living == 3, 1,0)
