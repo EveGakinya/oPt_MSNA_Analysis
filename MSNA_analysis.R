@@ -76,6 +76,7 @@ response_with_composites <- recoding_hno(response, loop)
 #                                          response_with_composites$cannot_diff > 0)
 #response_with_composites_nodisab <- subset(response_with_composites, response_with_composites$lot_diff == 0 & 
 #                                          response_with_composites$cannot_diff == 0)
+write.xlsx(response_with_composites, "output/protection_dataset_with_composites.xlsx")
 
 
 #LOAD ANALYSISPLAN
@@ -83,14 +84,10 @@ dap_name <- "oPt_hno"
 analysisplan <- read.csv(sprintf("input/dap/dap_%s.csv",dap_name), stringsAsFactors = F, sep = ";")
 response_with_composites$one <- "one"
 
-#Disaggregation Refugee Status
-response_with_composites$refugee_disagg <- ifelse(response_with_composites$refugee_status == "yes", "refugee", 
-                                                  "non_refugee")
-analysisplan$independent.variable <- "refugee_disagg"
-#Disaggregation by region (WB, Gaza, EJ, H2)
-analysisplan$repeat.for.variable <- "region"
 
 
+
+analysisplan$independent.variable <- "hno_strata"
 #AGGREGATE ACROSS DISTRICTS OR/AND POPULATION GROUPS
 #analysisplan <- analysisplan_nationwide(analysisplan)
 analysisplan <- analysisplan_pop_group_aggregated(analysisplan)
@@ -102,7 +99,7 @@ result <- from_analysisplan_map_to_output(response_with_composites, analysisplan
                                           questionnaire = questionnaire, confidence_level = 0.95)
 
 
-name <- "oPt_hno_strata_refugee_disagg"
+name <- "oPt_FINAL_severity_hno_strata_regular_rounding_without_s14"
 saveRDS(result,paste(sprintf("output/RDS/result_%s.RDS", name)))
 #summary[which(summary$dependent.var == "g51a"),]
 response_with_composites$strata <- ifelse(response_with_composites$strata == "area_a_b", "area_ab", 
