@@ -1,6 +1,12 @@
 
 recoding_preliminary <- function(r, loop) {
 
+r=response
+  
+  
+names(r)[1]<-"X_uuid"
+names(loop)[1]<-"X_uuid"
+  
 #% HH with at least one individual with a disability
 ##getting the hh with at least one individual with a disability in the loop
 loop$hh_wd <- case_when(loop$difficulty_communicating %in% c("a_lot_of_difficulty","cannot_do_at_all")|
@@ -19,6 +25,9 @@ loop$hh_wd <- case_when(loop$difficulty_communicating %in% c("a_lot_of_difficult
 
 ### mutating the variable hh_wd in the parent data 
 r$hh_with_disability <- loop$hh_wd[match(r$X_uuid, loop$X_uuid)]
+
+# ^Olivier does that really works ?
+# ^Evelyn yes it does work.
 
 ### mutating indicator hp1_a :% HH with at least one individual with a disability
 r$hp1_a <- case_when(r$hh_with_disability == 1 ~ 1,
@@ -82,43 +91,45 @@ r$hh5_ii <- ifelse(r$gender_respondent == "male", 1, 0)
 
 
 ##% of female headed households
-r$hh6_i <- case_when( r$gender_hhh == "female" ~ 1,
-                    r$gender_hhh == "male" ~ 0,
-                    TRUE ~ NA_real_)
+r$hh6_i <- case_when( r$hhh == "yes" & r$gender_respondent == "female"| r$gender_hhh == "female" ~ 1,
+                      TRUE ~ 0)
 
 ##% of male headed households
-r$hh6_i <- case_when( r$gender_hhh == "male" ~ 1,
-                      r$gender_hhh == "female" ~ 0,
-                      TRUE ~ NA_real_)
+r$hh6_ii <- case_when( (r$hhh == "yes" & r$gender_respondent == "male") | r$gender_hhh == "male" ~ 1,
+                       TRUE ~ 0)
 
 ##% of refugee households
 r$hh8 <- ifelse(r$refugee_status == "yes", 1, 0)
 
 ##% of households with at least one member who's pregnant or lactating
 r$hh10 <- ifelse(r$preg_lactating == "yes", 1, 0)
+# ^Olivier dont know should probably be NA  here
 
 ##% of households with at least one member with a chronic disease
 r$hh12 <- ifelse(r$chronic_illness == "yes", 1, 0)
+# ^Olivier dont know should probably be NA  here
 
 
 ##% of HHs displaced as a result of the most recent conflict in Gaza (starting on the 11th of May 2021)
 r$hhd1 <- case_when(r$permanent_location_g == "no" ~ 1,
                     r$permanent_location_g %in% c("yes", "do_not_know", "decline_to_answer") ~ 0,
                     TRUE ~ NA_real_)
-
+# ^Olivier dont know should probably be NA  here too
 
 ##% of HHs that have been displaced as a result of the recent conflict and have since returned to their previous location
 r$hhd2 <- case_when(r$permanent_location_g == "yes" & r$displacement_status_g == "yes" ~ 1,
                     r$displacement_status_g %in% c("no", "do_not_know", "decline_to_answer") |
-                    r$permanent_location_g %in% c("no", "do_not_know", "decline_to_answer")   ~ 0,
+                      r$permanent_location_g %in% c("no", "do_not_know", "decline_to_answer")   ~ 0,
                     TRUE ~ NA_real_)
+# ^Olivier - what is the rational behind dont know dont want to answer as 0 rather than NA?
+
 
 
 ##% of HHs currently hosting displaced individuals
 r$hhd3 <- case_when(r$currently_hosting_displaced_g == "yes" ~ 1,
                     r$currently_hosting_displaced_g %in% c("no", "do_not_know", "decline_to_answer") ~ 0,
                     TRUE ~ NA_real_)
- 
+# ^Olivier dont know should probably be NA  here
 
 ##Food Security
 r$fcs <- 
@@ -145,15 +156,15 @@ r$ate_less <- ifelse(r$ate_less == "yes", 1,0)
 r$ranout <- ifelse(r$out_of_food == "yes", 1,0)
 r$hungry <- ifelse(r$hungry_ddnt_eat == "yes", 1,0)
 r$wholeday <- ifelse(r$day_without_eating == "yes", 1,0)
-
+# ^Olivier dont know / decline to answer should probably be NA  here
 
 
 ##% HH relying on stress / crisis / emergency strategies to cope with a lack of food or money to buy it
 r$stress <-
   ifelse(
     r$coping_selling_properties %in% c("no_already_did", "yes") |
-    r$coping_food_credit %in% c("no_already_did", "yes") |
-    r$coping_reducing_expenditure %in% c("no_already_did", "yes"), 
+      r$coping_food_credit %in% c("no_already_did", "yes") |
+      r$coping_reducing_expenditure %in% c("no_already_did", "yes"), 
     1,
     0  
   )
@@ -161,17 +172,18 @@ r$stress <-
 r$crisis <-
   ifelse(
     r$coping_selling_tranport %in% c("no_already_did", "yes") |
-    r$coping_changing_residency %in% c("no_already_did", "yes") |
-    r$coping_child_labour %in% c("no_already_did", "yes"),
+      r$coping_changing_residency %in% c("no_already_did", "yes") |
+      r$coping_child_labour %in% c("no_already_did", "yes"),
     1,
     0
   )
+
 r$emergency <-
   ifelse(
     r$coping_children_dropout %in% c("no_already_did", "yes") |
-    r$coping_risky_behaviour %in% c("no_already_did", "yes") |
-    r$coping_migration %in% c("no_already_did", "yes") |
-    r$coping_forced_marriage %in% c("no_already_did", "yes"),
+      r$coping_risky_behaviour %in% c("no_already_did", "yes") |
+      r$coping_migration %in% c("no_already_did", "yes") |
+      r$coping_forced_marriage %in% c("no_already_did", "yes"),
     1,
     0
   )
@@ -189,6 +201,8 @@ r$h1 <- ifelse(r$distance_hospital <= 30, 1, 0)
 
 #% of HH that needed to access health services in the past 3 months
 r$h2 <- ifelse( r$health_accessed == "yes", 1, 0) 
+# ^Olivier - what about donnt know - that is considered as no?
+
 
 #% of HH that needed to access health services in the past 3 months by type of treatment
 r$h2_i    <- r$type_treatment.covid_19_testing
@@ -204,8 +218,8 @@ r$h2_bii  <-r$facility_attempt_care.secondary
 
 #% of HHs reporting access barriers when trying to access health services in the past 3 months
 r$h3 <- case_when(r$health_barriers == "yes" ~ 1,
-                    r$health_barriers %in% c("no", "do_not_know", "decline_to_answer") ~ 0,
-                    TRUE ~ NA_real_)
+                  r$health_barriers %in% c("no", "do_not_know", "decline_to_answer") ~ 0,
+                  TRUE ~ NA_real_)
 
 #% of HHs reporting access barriers when trying to access health services in the past 3 months by type of barrier
 r$h3_i    <- r$type_health_barriers.cost
@@ -226,6 +240,8 @@ r$h3_xv   <- r$type_health_barriers.refused_treatment
 r$h3_xvi  <- r$type_health_barriers.no_offered_treatment
 r$h3_xvii <- r$type_health_barriers.not_inclusive
 
+# ^Olivier - what about donnt know / decline_to_answer - should it be NA?
+
 
 ##% of HHs reporting that NOT all members in their household are willing to be vaccinated against COVID-19
 r$h4 <- ifelse(r$vaccine_willingness == "no", 1, 0)
@@ -242,10 +258,19 @@ r$h4_viii <- r$vaccine_why_not.general_opposition_vaccine
 r$h4_ix   <- r$vaccine_why_not.too_young
 
 
+# ^Olivier - what about donnt know / decline_to_answer - should it be NA?
+
+
+
+
 #% HH with members unable to access one or more services due to disability
 r$hp7 <- case_when(r$disability_access_barriers == "yes" ~ 1,
-                  r$disability_access_barriers %in% c("no", "do_not_know", "decline_to_answer") ~ 0,
-                  TRUE ~ NA_real_)
+                   r$disability_access_barriers %in% c("no", "do_not_know", "decline_to_answer") ~ 0,
+                   TRUE ~ NA_real_)
+
+# ^Olivier - what about donnt know / decline_to_answer - should it be NA?
+
+
 
 #Primary reason why services are inaccesible to persons with disabilities 
 r$hp8_i     <- ifelse(r$disability_access_barriers_reason == "costs_access", 1,0)
@@ -261,6 +286,8 @@ r$hp8_x     <- ifelse(r$disability_access_barriers_reason == "stigma", 1,0)
 r$hp8_xi    <- ifelse(r$disability_access_barriers_reason == "lack_permit", 1,0)
 r$hp8_xii   <- ifelse(r$disability_access_barriers_reason == "other", 1,0)
 
+# ^Olivier - what about donnt know / decline_to_answer - should it be NA?
+# I have stopped there
 
 #% of HH where at least one member is reporting signs of psychosocial distress (self-diagnosed)
 r$hp9 <- ifelse(r$hh_member_distress == "yes", 1,0)
@@ -891,15 +918,18 @@ r$p9 <-
   )
 
 ##% of HHs whose house has been damage or destroyed as a result of the 2014 conflict
-r$sp6_i <- ifelse(r$building_damage_level_2021_g == "major_damage" | 
-                  r$building_damage_level_2021_g == "minor_damage", 1, 0)
+
+r$sp6_i <- case_when(r$building_damage_level_2014_g %in% c("major_damage","minor_damage")~ 1,
+                     r$building_damage_level_2014_g == "do_not_know" ~ 0,
+                     r$region == "gaza" & is.na(r$building_damage_level_2014_g) ~ 0,
+                     TRUE ~ NA_real_)
 
 
 ##% of HHs reporting damage to their current shelter as a result of the recent conflict 
-r$sp6_ii <- ifelse(r$building_damage_level_2021_g == "major_damage" | 
-                  r$building_damage_level_2021_g == "minor_damage", 1, 0)
 
-
+r$sp6_ii <- case_when(r$building_damage_level_2021_g %in% c("major_damage","minor_damage")~ 1,
+                                     r$region == "gaza" & is.na(r$building_damage_level_2021_g) ~ 0,
+                                     TRUE ~ NA_real_)
 #% of HHs whose house is currently still damaged as a result of bombardment since 2014
 r$sp6_iii <-
   case_when(
