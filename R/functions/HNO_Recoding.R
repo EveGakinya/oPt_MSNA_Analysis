@@ -222,12 +222,22 @@ r$tot_distressed <- as.numeric(r$child_distress_number) + as.numeric(r$adult_dis
 
 r$per_distressed <- round((r$tot_distressed/as.numeric(r$hh_size))*100, 1)
 
-r$s_10 = case_when(
+r$s_10_inters = case_when(
   r$per_distressed >= 0 & r$per_distressed < 20 ~ 2,
   r$per_distressed >= 20 & r$per_distressed < 40 ~ 3,
   r$per_distressed >= 40 & r$per_distressed < 60 ~ 4,
   r$per_distressed >= 60 ~ 5,
   TRUE ~ 1)
+prop.table(table(r$s_10_inters))
+
+r$s_10_cluster = case_when(
+  r$per_distressed == 0 ~ 1,
+  r$per_distressed > 0 & r$per_distressed < 31 ~ 3,
+  r$per_distressed >= 31 & r$per_distressed < 61 ~ 4,
+  r$per_distressed >= 61 & r$per_distressed < 101 ~ 5,
+  TRUE ~ 1)
+prop.table(table(r$s_10_cluster))
+
 
 # ^- olivier -/- there is a gap between 19-20, 39-40, 59-60 change for   r$per_distressed >= 0 & r$per_distressed < 20 ~ 2, etc.
 # ^- evelyn -/- recoding updated
@@ -369,8 +379,8 @@ r$s_19 <- case_when(r$l19a > 2000 ~1,
 #S_20 Average number of household members per room
 r$s2 <- round((as.numeric(r$hh_size) / as.numeric(r$num_of_rooms)),1)
 r$s_20 <- case_when(r$s2 <= 1 ~ 1,
-                   r$s2 > 1 & r$s2 <= 1.99 ~2,
-                   r$s2 > 2 & r$s2 <= 2.99 ~ 3,
+                   r$s2 > 1 & r$s2 <= 2 ~2,
+                   r$s2 > 2 & r$s2 <= 3 ~ 3,
                    r$s2 > 3  ~ 4,
                    TRUE ~ NA_real_)
 

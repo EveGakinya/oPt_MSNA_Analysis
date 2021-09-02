@@ -76,7 +76,9 @@ response_with_composites <- recoding_hno(response, loop)
 #                                          response_with_composites$cannot_diff > 0)
 #response_with_composites_nodisab <- subset(response_with_composites, response_with_composites$lot_diff == 0 & 
 #                                          response_with_composites$cannot_diff == 0)
-write.xlsx(response_with_composites, "output/protection_dataset_with_composites.xlsx")
+response_north_gaza <- subset(response_with_composites, response_with_composites$hno_strata == "north_gaza")
+                        
+write.csv(response_north_gaza, "output/north_gaza_dataset_with_composites.csv")
 
 
 #LOAD ANALYSISPLAN
@@ -87,7 +89,6 @@ response_with_composites$one <- "one"
 
 
 
-analysisplan$independent.variable <- "hno_strata"
 #AGGREGATE ACROSS DISTRICTS OR/AND POPULATION GROUPS
 #analysisplan <- analysisplan_nationwide(analysisplan)
 analysisplan <- analysisplan_pop_group_aggregated(analysisplan)
