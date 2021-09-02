@@ -1,6 +1,32 @@
 recoding_hno <- function(r, loop) {
 
-r <- response
+### Female headed household
+r$female_headed <- case_when(r$hhh == "yes" & r$gender_respondent == "female"| 
+                               r$gender_hhh == "female" ~ "female_headed",
+                             TRUE ~ "male_headed")
+###Gazans displaced by most recent escalation
+r$gazans_displaced <- case_when(r$permanent_location_g == "no" ~ "displaced",
+                                r$permanent_location_g %in% c("yes", "do_not_know", "decline_to_answer") ~ "non_displaced",
+                                is.na(r$permanent_location_g) ~ NA_character_)
+###Non refugees
+r$non_refugee <- ifelse(r$refugee_status == "no", "non_refugee", "refugee")
+
+###HHs whose primary source of income is agriculture, livestock or herding
+r$agricultural_hh <- case_when(r$primary_livelihood.agriculture == 1 ~ "agricultural",
+                               TRUE ~ "non_agricultural")
+
+### HHs whose shelter has been damaged or destroyed in the recent escalation
+r$recent_shelter_damage <- case_when(r$building_damage_level_2021_g %in% c("major_damage","minor_damage")~ "damaged",
+                                     r$region == "gaza" & is.na(r$building_damage_level_2021_g) ~ "not_damaged",
+                                     TRUE ~ NA_character_)
+
+###In-camp refugees and Out-camp refugee
+r$in_camp_refugee <- case_when(r$refugee_status == "yes" & grepl("camp", r$strata) ~ "in_camp_refugee",
+                               r$refugee_status == "yes" & !grepl("camp", r$strata) ~ "out_camp_refugee",
+                               TRUE ~ NA_character_)
+
+
+
 cols.nam <- c("unsafe_locations.latrines_bathing_facilities", "unsafe_locations.water_points", "unsafe_locations.distribution_areas",
               "unsafe_locations.settlements_checkpoints", "unsafe_locations.markets", "unsafe_locations.at_the_workplace", "unsafe_locations.social_community_areas",
               "unsafe_locations.public_transport", "unsafe_locations.route_to_school", "unsafe_locations.route_to_communty_centres",
@@ -64,6 +90,7 @@ r$s_1 <- case_when(r$some_diff == 0 & r$lot_diff == 0 & r$cannot_diff == 0 ~ 1,
                    is.na(r$no_diff) & is.na(r$some_diff) & is.na(r$lot_diff) & is.na(r$cannot_diff) ~ 1)
 
 # ^- olivier -/- a mistake in the excel table, so i am not sure that it is accurate
+# ^- michael -/- The mistake is in the excel table. This is actually a JIAF indicator, so these calculations here are aligned with the JIAF threholds
 
 #S_2 AAP
 #% HH satisfied with aid received 
@@ -71,11 +98,12 @@ r$s_1 <- case_when(r$some_diff == 0 & r$lot_diff == 0 & r$cannot_diff == 0 ~ 1,
 ##############
 r$s_2 <- case_when(
   r$aid_satisfaction == "yes" & r$complaint_mechanisms == "yes" ~ 1,
-  r$aid_satisfaction == "no" & r$complaint_mechanisms == "yes" ~ 2,
+  r$aid_satisfaction == "yes" & r$complaint_mechanisms == "no" ~ 2,
+  r$aid_satisfaction == "no" & r$complaint_mechanisms == "yes" ~ 4,
   r$aid_satisfaction == "no" & r$complaint_mechanisms == "no" ~ 3,
 )
 # ^- olivier -/- can you be satisfied and not aware?
-# ^- evelyn -/- yes, one can be satisfied and not aware 
+# ^- evelyn -/- yes, one can be satisfied with the received and not aware of complaint mechanisms
 
 ###Education
 ###S_3 calculating the percentage of the school aged children who are out of school
@@ -109,8 +137,7 @@ r$s_5 <- case_when(r$es3a == 100 & r$catch_up_learning == "no" ~ 1,
                    r$es3a == 100 & r$catch_up_learning == "yes" ~ 2,
                    r$es3a < 100 & r$catch_up_learning == "no" ~ 3,
                    r$es3a < 100 & r$catch_up_learning == "yes" ~ 4,
-                   True ~ NA_real_)
-
+                   TRUE ~ NA_real_)
 
 r$es3a[which(r$es3a > 100)]
 # ^- olivier -/- one is more than 100, please check back the data
@@ -220,18 +247,29 @@ r$tot_distressed <- as.numeric(r$child_distress_number) + as.numeric(r$adult_dis
 
 r$per_distressed <- round((r$tot_distressed/as.numeric(r$hh_size))*100, 1)
 
-r$s_10 = case_when(
+r$s_10_inters = case_when(
   r$per_distressed >= 0 & r$per_distressed < 20 ~ 2,
   r$per_distressed >= 20 & r$per_distressed < 40 ~ 3,
   r$per_distressed >= 40 & r$per_distressed < 60 ~ 4,
   r$per_distressed >= 60 ~ 5,
   TRUE ~ 1)
+prop.table(table(r$s_10_inters))
+
+r$s_10_cluster = case_when(
+  r$per_distressed == 0 ~ 1,
+  r$per_distressed > 0 & r$per_distressed < 31 ~ 3,
+  r$per_distressed >= 31 & r$per_distressed < 61 ~ 4,
+  r$per_distressed >= 61 & r$per_distressed < 101 ~ 5,
+  TRUE ~ 1)
+prop.table(table(r$s_10_cluster))
+
 
 # ^- olivier -/- there is a gap between 19-20, 39-40, 59-60 change for   r$per_distressed >= 0 & r$per_distressed < 20 ~ 2, etc.
 # ^- evelyn -/- recoding updated
 
 #S_11 % of girls / women who avoid areas because they feel unsafe")
 r$s_11 <- case_when(
+                  r$women_feel_unsafe == "no" ~ 1,
                   r$unsafe_locations_tot == 0 ~ 1,
                   r$unsafe_locations_tot == 1 ~ 2,
                   r$unsafe_locations_tot == 2 ~ 3,
@@ -258,6 +296,7 @@ r$p13a <- ifelse(r$tot_children == r$tot_under_18_working, 1, 0)
 
 #S_13 % of girls / boys engaged in child labour
 r$s_13 <- case_when(
+                is.na(r$tot_under_18_working) & as.numeric(r$tot_children) > 0 ~ 1,
                 r$tot_under_18_working == 0 ~ 1,
                 r$tot_under_18_working == 1 ~ 3,
                 r$tot_under_18_working > 1 ~ 4,
@@ -265,17 +304,27 @@ r$s_13 <- case_when(
 
 
 #S_14 % of HHs having access to a sufficient quantity of water for drinking, cooking, bathing, washing or other domestic use")
+#r$s_14 <- case_when(
+#  (r$sufficient_water_cooking == "yes" & r$sufficient_water_drinking == "yes" &
+#     r$sufficient_water_hygiene_personal == "yes" & r$sufficient_water_other_water == "yes") ~ 1,
+#  (r$sufficient_water_cooking == "yes" & r$sufficient_water_drinking == "yes" &
+#     r$sufficient_water_hygiene_personal == "yes" & r$sufficient_water_other_water == "no") ~ 2,
+#  (r$sufficient_water_drinking == "yes" & (r$sufficient_water_cooking == "yes" & 
+#                                             r$sufficient_water_hygiene_personal == "no") | 
+#     (r$sufficient_water_cooking == "no" & r$sufficient_water_hygiene_personal == "yes")) ~ 3,
+#  (r$sufficient_water_drinking == "yes" & r$sufficient_water_cooking == "no" & 
+#     r$sufficient_water_hygiene_personal == "no") ~ 4,
+#  (r$sufficient_water_drinking == "no") ~ 5)
+
+#S_14 % of households with access to an improved water source for drinking and domestic purposes
 r$s_14 <- case_when(
-  (r$sufficient_water_cooking == "yes" & r$sufficient_water_drinking == "yes" &
-     r$sufficient_water_hygiene_personal == "yes" & r$sufficient_water_other_water == "yes") ~ 1,
-  (r$sufficient_water_cooking == "yes" & r$sufficient_water_drinking == "yes" &
-     r$sufficient_water_hygiene_personal == "yes" & r$sufficient_water_other_water == "no") ~ 2,
-  (r$sufficient_water_drinking == "yes" & (r$sufficient_water_cooking == "yes" & 
-                                             r$sufficient_water_hygiene_personal == "no") | 
-     (r$sufficient_water_cooking == "no" & r$sufficient_water_hygiene_personal == "yes")) ~ 3,
-  (r$sufficient_water_drinking == "yes" & r$sufficient_water_cooking == "no" & 
-     r$sufficient_water_hygiene_personal == "no") ~ 4,
-  (r$sufficient_water_drinking == "no") ~ 5)
+  r$drinking_water_source == "network_private" | r$drinking_water_source == "network_comm" | 
+    r$drinking_water_source == "illegal_connection" ~ 1,
+  r$drinking_water_source == "borehole" | r$drinking_water_source == "prot_well" | 
+    r$drinking_water_source == "prot_tank" | r$drinking_water_source == "prot_spring"  ~ 2,
+    r$drinking_water_source == "bottled_water" | r$drinking_water_source == "water_trucking" ~ 3,
+    r$drinking_water_source == "unprot_well" | r$drinking_water_source == "unprot_spring" ~ 4,
+    r$drinking_water_source == "surface_water" ~ 5)
 
 
 
@@ -335,9 +384,9 @@ r$s_17 <- case_when(r$s17a<= 40 & r$s17a > 0 ~ 2,
 #S_18 % of HHs unable to afford basic needs
 r$s_18 <- case_when(r$how_much_debt == 0 ~ 1,
                    r$reasons_for_debt == "income_generating_activities" |r$reasons_for_debt == "business_related" |
-                    r$reasons_for_debt == "clothing_or_NFI"| r$reasons_for_debt == "major_purchase"  ~ 2,
+                    r$reasons_for_debt == "clothing_or_NFI"| r$reasons_for_debt == "major_purchase" ~ 2,
                    r$reasons_for_debt == "weddings"| r$reasons_for_debt == "reconstruction" ~ 3,
-                   r$reasons_for_debt == "education"| r$reasons_for_debt == "basic_household_expenditure" ~ 4,
+                   r$reasons_for_debt == "education"| r$reasons_for_debt == "basic_household_expenditures" ~ 4,
                    r$reasons_for_debt == "healthcare" | r$reasons_for_debt == "food" ~ 5)
 
 # ^- olivier -/- there is nto any 5 in the framework
@@ -355,9 +404,9 @@ r$s_19 <- case_when(r$l19a > 2000 ~1,
 #S_20 Average number of household members per room
 r$s2 <- round((as.numeric(r$hh_size) / as.numeric(r$num_of_rooms)),1)
 r$s_20 <- case_when(r$s2 <= 1 ~ 1,
-                   r$s2 > 1 & r$s2 <= 1.99 ~2,
-                   r$s2 > 2 & r$s2 <= 2.99 ~ 3,
-                   r$s2 > 3 & r$s2 <= 7 ~ 4,
+                   r$s2 > 1 & r$s2 <= 2 ~2,
+                   r$s2 > 2 & r$s2 <= 3 ~ 3,
+                   r$s2 > 3  ~ 4,
                    TRUE ~ NA_real_)
 
 #S_21 % of HHs whose shelter has any kind of damage or defects
@@ -374,7 +423,10 @@ hno <-  r[c(which(startsWith(names(r), "s_")))]
 hno$mean <-  apply(hno, 1, function(y) {
   round2(mean(tail(sort(y), (floor(ncol(hno)/2)))))
 })
-
+#Rounding up
+#hno$mean <-  apply(hno, 1, function(y) {
+#  ceiling(mean(tail(sort(y), (floor(ncol(hno)/2)))))
+#})
 
 #d <- density(hno$mean_unrounded) 
 #plot(d)
@@ -383,7 +435,7 @@ hno$mean <-  apply(hno, 1, function(y) {
 
 #CRITICAL INDICATORS
 hno$critical <-  apply(hno, 1, function(y) {
-  max(y[c("s_8", "s_14")])
+  max(y[c("s_8", "s_15")])
 })
 hno$critical <- ifelse(is.na(hno$critical),0, hno$critical)
 hno$final_severity <- ifelse(hno$critical > hno$mean, hno$critical, hno$mean)
