@@ -228,15 +228,6 @@ r$s_10_inters = case_when(
   r$per_distressed >= 40 & r$per_distressed < 60 ~ 4,
   r$per_distressed >= 60 ~ 5,
   TRUE ~ 1)
-prop.table(table(r$s_10_inters))
-
-r$s_10_cluster = case_when(
-  r$per_distressed == 0 ~ 1,
-  r$per_distressed > 0 & r$per_distressed < 31 ~ 3,
-  r$per_distressed >= 31 & r$per_distressed < 61 ~ 4,
-  r$per_distressed >= 61 & r$per_distressed < 101 ~ 5,
-  TRUE ~ 1)
-prop.table(table(r$s_10_cluster))
 
 
 # ^- olivier -/- there is a gap between 19-20, 39-40, 59-60 change for   r$per_distressed >= 0 & r$per_distressed < 20 ~ 2, etc.
