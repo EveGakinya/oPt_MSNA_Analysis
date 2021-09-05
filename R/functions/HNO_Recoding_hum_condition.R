@@ -1,6 +1,8 @@
 recoding_hno_coping <- function(r, loop) {
   
   r <- response
+  names(r)[1]<-"X_uuid"
+  names(loop)[1]<-"X_uuid"
   cols.nam <- c("unsafe_locations.latrines_bathing_facilities", "unsafe_locations.water_points", "unsafe_locations.distribution_areas",
                 "unsafe_locations.settlements_checkpoints", "unsafe_locations.markets", "unsafe_locations.at_the_workplace", "unsafe_locations.social_community_areas",
                 "unsafe_locations.public_transport", "unsafe_locations.route_to_school", "unsafe_locations.route_to_communty_centres",
@@ -432,6 +434,112 @@ recoding_hno_coping <- function(r, loop) {
   r$hno_severity_wellbeing_4 <- ifelse(r$final_severity_wellbeing == 4, 1,0)
   r$hno_severity_wellbeing_5 <- ifelse(r$final_severity_wellbeing == 5, 1,0)
   
+  #Humanitarian Sector - Education
+  #MEAN OF MAX 50% CALCULATION
+  hno_edu <-  r[c("s_3", "s_4", "s_5")]      
+  #Normal rounding
+  hno_edu$final_severity_edu <-  apply(hno_edu, 1, function(y) {
+    round2(mean(tail(sort(y), (floor(ncol(hno_edu)/2)))))
+  })
+  #HNO FINAL SEVERITY | edu
+  r$final_severity_edu <- hno_edu$final_severity_edu
+  r$hno_severity_edu_1 <- ifelse(r$final_severity_edu == 1, 1,0)
+  r$hno_severity_edu_2 <- ifelse(r$final_severity_edu == 2, 1,0)
+  r$hno_severity_edu_3 <- ifelse(r$final_severity_edu == 3, 1,0)
+  r$hno_severity_edu_4 <- ifelse(r$final_severity_edu == 4, 1,0)
+  r$hno_severity_edu_5 <- ifelse(r$final_severity_edu == 5, 1,0)
+  
+  #Humanitarian Sector - Food Security
+  #MEAN OF MAX 50% CALCULATION
+  hno_food <-  r[c("s_6", "s_7", "s_8")]      
+  #Normal rounding
+  hno_food$final_severity_food <-  apply(hno_food, 1, function(y) {
+    round2(mean(tail(sort(y), (floor(ncol(hno_food)/2)))))
+  })
+  #HNO FINAL SEVERITY | food
+  r$final_severity_food <- hno_food$final_severity_food
+  r$hno_severity_food_1 <- ifelse(r$final_severity_food == 1, 1,0)
+  r$hno_severity_food_2 <- ifelse(r$final_severity_food == 2, 1,0)
+  r$hno_severity_food_3 <- ifelse(r$final_severity_food == 3, 1,0)
+  r$hno_severity_food_4 <- ifelse(r$final_severity_food == 4, 1,0)
+  r$hno_severity_food_5 <- ifelse(r$final_severity_food == 5, 1,0)
+  
+  #Humanitarian Sector - Health
+  #MEAN OF MAX 50% CALCULATION
+  hno_health <-  r[c("s_1","s_9", "s_10")]      
+  #Normal rounding
+  hno_health$final_severity_health <-  apply(hno_health, 1, function(y) {
+    round2(mean(tail(sort(y), (floor(ncol(hno_health)/2)))))
+  })
+  #HNO FINAL SEVERITY | health
+  r$final_severity_health <- hno_health$final_severity_health
+  r$hno_severity_health_1 <- ifelse(r$final_severity_health == 1, 1,0)
+  r$hno_severity_health_2 <- ifelse(r$final_severity_health == 2, 1,0)
+  r$hno_severity_health_3 <- ifelse(r$final_severity_health == 3, 1,0)
+  r$hno_severity_health_4 <- ifelse(r$final_severity_health == 4, 1,0)
+  r$hno_severity_health_5 <- ifelse(r$final_severity_health == 5, 1,0)
+  
+  
+  #Humanitarian Sector - Livelihoods
+  #MEAN OF MAX 50% CALCULATION
+  hno_livelihood <-  r[c("s_17", "s_18", "s_19")]      
+  #Normal rounding
+  hno_livelihood$final_severity_livelihood <-  apply(hno_livelihood, 1, function(y) {
+    round2(mean(tail(sort(y), (floor(ncol(hno_livelihood)/2)))))
+  })
+  #HNO FINAL SEVERITY | livelihood
+  r$final_severity_livelihood <- hno_livelihood$final_severity_livelihood
+  r$hno_severity_livelihood_1 <- ifelse(r$final_severity_livelihood == 1, 1,0)
+  r$hno_severity_livelihood_2 <- ifelse(r$final_severity_livelihood == 2, 1,0)
+  r$hno_severity_livelihood_3 <- ifelse(r$final_severity_livelihood == 3, 1,0)
+  r$hno_severity_livelihood_4 <- ifelse(r$final_severity_livelihood == 4, 1,0)
+  r$hno_severity_livelihood_5 <- ifelse(r$final_severity_livelihood == 5, 1,0)
+  
+  #Humanitarian Sector - Protection
+  #MEAN OF MAX 50% CALCULATION
+  hno_protection <-  r[c("s_11", "s_12", "s_13")]      
+  #Normal rounding
+  hno_protection$final_severity_protection <-  apply(hno_protection, 1, function(y) {
+    round2(mean(tail(sort(y), (floor(ncol(hno_protection)/2)))))
+  })
+  #HNO FINAL SEVERITY | protection
+  r$final_severity_protection <- hno_protection$final_severity_protection
+  r$hno_severity_protection_1 <- ifelse(r$final_severity_protection == 1, 1,0)
+  r$hno_severity_protection_2 <- ifelse(r$final_severity_protection == 2, 1,0)
+  r$hno_severity_protection_3 <- ifelse(r$final_severity_protection == 3, 1,0)
+  r$hno_severity_protection_4 <- ifelse(r$final_severity_protection == 4, 1,0)
+  r$hno_severity_protection_5 <- ifelse(r$final_severity_protection == 5, 1,0)
+  
+  #Humanitarian Sector - Shelter
+  #MEAN OF MAX 50% CALCULATION
+  hno_shelter <-  r[c("s_20", "s_21")]      
+  #Normal rounding
+  hno_shelter$final_severity_shelter <-  apply(hno_shelter, 1, function(y) {
+    round2(mean(tail(sort(y), (floor(ncol(hno_shelter)/2)))))
+  })
+  #HNO FINAL SEVERITY | shelter
+  r$final_severity_shelter <- hno_shelter$final_severity_shelter
+  r$hno_severity_shelter_1 <- ifelse(r$final_severity_shelter == 1, 1,0)
+  r$hno_severity_shelter_2 <- ifelse(r$final_severity_shelter == 2, 1,0)
+  r$hno_severity_shelter_3 <- ifelse(r$final_severity_shelter == 3, 1,0)
+  r$hno_severity_shelter_4 <- ifelse(r$final_severity_shelter == 4, 1,0)
+  r$hno_severity_shelter_5 <- ifelse(r$final_severity_shelter == 5, 1,0)
+  
+  
+  #Humanitarian Sector - WASH
+  #MEAN OF MAX 50% CALCULATION
+  hno_wash <-  r[c("s_14", "s_15", "s_16")]      
+  #Normal rounding
+  hno_wash$final_severity_wash <-  apply(hno_wash, 1, function(y) {
+    round2(mean(tail(sort(y), (floor(ncol(hno_wash)/2)))))
+  })
+  #HNO FINAL SEVERITY | wash
+  r$final_severity_wash <- hno_wash$final_severity_wash
+  r$hno_severity_wash_1 <- ifelse(r$final_severity_wash == 1, 1,0)
+  r$hno_severity_wash_2 <- ifelse(r$final_severity_wash == 2, 1,0)
+  r$hno_severity_wash_3 <- ifelse(r$final_severity_wash == 3, 1,0)
+  r$hno_severity_wash_4 <- ifelse(r$final_severity_wash == 4, 1,0)
+  r$hno_severity_wash_5 <- ifelse(r$final_severity_wash == 5, 1,0)
   
   
   
