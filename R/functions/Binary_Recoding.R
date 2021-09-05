@@ -192,7 +192,18 @@ r$fl1_i <- ifelse(r$stress == 1, 1,0)
 r$fl1_ii <- ifelse(r$crisis == 1, 1,0)
 r$fl1_iii <- ifelse(r$emergency == 1, 1,0)
 
-
+r$fl2_i <- ifelse(r$coping_changing_residency %in% c("no_already_did", "yes"), 1,0)
+r$fl2_ii <- ifelse(r$coping_child_labour %in% c("no_already_did", "yes"), 1,0)
+r$fl2_iii <- ifelse(r$coping_children_dropout %in% c("no_already_did", "yes"), 1,0)
+r$fl2_iv <- ifelse(r$coping_food_credit %in% c("no_already_did", "yes"), 1,0)
+r$fl2_v <- ifelse(r$coping_forced_marriage %in% c("no_already_did", "yes"), 1,0)
+r$fl2_vi <- ifelse(r$coping_less_expensive_school %in% c("no_already_did", "yes"), 1,0)
+r$fl2_vii <- ifelse(r$coping_migration %in% c("no_already_did", "yes"), 1,0)
+r$fl2_viii <- ifelse(r$coping_reducing_expenditure %in% c("no_already_did", "yes"), 1,0)
+r$fl2_ix <- ifelse(r$coping_risky_behaviour %in% c("no_already_did", "yes"), 1,0)
+r$fl2_x <- ifelse(r$coping_selling_animals %in% c("no_already_did", "yes"), 1,0)
+r$fl2_xi <- ifelse(r$coping_selling_properties %in% c("no_already_did", "yes"), 1,0)
+r$fl2_xii <- ifelse(r$coping_selling_tranport %in% c("no_already_did", "yes"), 1,0)
 
 ####Health
 ##% HH that can access a hospital within a 30min walk from dwellings
@@ -1017,6 +1028,9 @@ r$aap7_ix <- r$aid_preferred_g.vouchers
 r$aap10 <- case_when(r$complaint_mechanisms == "yes" ~ 1, 
                         r$complaint_mechanisms %in% c("no","do_not_know", "decline_to_answer") ~ 0,
                         TRUE ~  NA_real_)
+
+
+
 
 return(r)
 }

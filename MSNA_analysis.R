@@ -67,6 +67,7 @@ response$weights <- ifelse(response$strata == "camps_wb", 1,
 #RECODING OF INDICATORS
 response_with_composites <- recoding_hno(response, loop)
 
+
 #DISAGGREGATE MALE AND FEMALE HEADED HHs
 #female_headed <- response_with_composites[which(response_with_composites$X_uuid %in% loop$X_uuid[which(loop$sex == "female" & loop$relationship == "head")]),]
 #male_headed <- response_with_composites[which(response_with_composites$X_uuid %in% loop$X_uuid[which(loop$sex == "male" & loop$relationship == "head")]),]
@@ -76,16 +77,17 @@ response_with_composites <- recoding_hno(response, loop)
 #                                          response_with_composites$cannot_diff > 0)
 #response_with_composites_nodisab <- subset(response_with_composites, response_with_composites$lot_diff == 0 & 
 #                                          response_with_composites$cannot_diff == 0)
-response_north_gaza <- subset(response_with_composites, response_with_composites$hno_strata == "north_gaza")
-                        
-write.csv(response_north_gaza, "output/north_gaza_dataset_with_composites.csv")
 
 
 #LOAD ANALYSISPLAN
-dap_name <- "oPt_hno"
+dap_name <- "oPt_preliminary"
 analysisplan <- read.csv(sprintf("input/dap/dap_%s.csv",dap_name), stringsAsFactors = F, sep = ";")
-response_with_composites$one <- "one"
-
+analysisplan$independent.variable <-  "female_headed"
+analysisplan$independent.variable <-  "gazans_displaced"
+analysisplan$independent.variable <-  "agricultural_hh"
+analysisplan$independent.variable <-  "recent_shelter_damage"
+analysisplan$independent.variable <-  "in_camp_refugee"
+analysisplan$repeat.for.variable <- "region"
 
 
 
@@ -100,7 +102,7 @@ result <- from_analysisplan_map_to_output(response_with_composites, analysisplan
                                           questionnaire = questionnaire, confidence_level = 0.95)
 
 
-name <- "oPt_FINAL_severity_hno_strata_regular_rounding_without_s14"
+name <- "oPt_preliminary_incl food coping"
 saveRDS(result,paste(sprintf("output/RDS/result_%s.RDS", name)))
 #summary[which(summary$dependent.var == "g51a"),]
 response_with_composites$strata <- ifelse(response_with_composites$strata == "area_a_b", "area_ab", 
@@ -124,4 +126,11 @@ for (i in 1:length(groups)) {
     write.xlsx(df, file=sprintf("output/summary_sorted/summary_sorted_%s.xlsx", name), sheetName=groups[i], append=TRUE, row.names=FALSE)
   }
 }
+
+
+response$gaggi <- ifelse(response$remote_learning > response$tot_school_aged, 1,0)
+response$tot_school_aged <- response$school_girls_5_10 + response$school_girls_11_15 + 
+  response$school_girls_16_17 + response$school_boys_5_10 + response$school_boys_11_15 +
+  response$school_boys_16_17
+table(response$gaggi)
 

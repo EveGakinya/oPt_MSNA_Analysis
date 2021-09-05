@@ -247,7 +247,7 @@ r$tot_distressed <- as.numeric(r$child_distress_number) + as.numeric(r$adult_dis
 
 r$per_distressed <- round((r$tot_distressed/as.numeric(r$hh_size))*100, 1)
 
-r$s_10_inters = case_when(
+r$s_10 = case_when(
   r$per_distressed >= 0 & r$per_distressed < 20 ~ 2,
   r$per_distressed >= 20 & r$per_distressed < 40 ~ 3,
   r$per_distressed >= 40 & r$per_distressed < 60 ~ 4,
@@ -295,27 +295,27 @@ r$s_13 <- case_when(
 
 
 #S_14 % of HHs having access to a sufficient quantity of water for drinking, cooking, bathing, washing or other domestic use")
-#r$s_14 <- case_when(
-#  (r$sufficient_water_cooking == "yes" & r$sufficient_water_drinking == "yes" &
-#     r$sufficient_water_hygiene_personal == "yes" & r$sufficient_water_other_water == "yes") ~ 1,
-#  (r$sufficient_water_cooking == "yes" & r$sufficient_water_drinking == "yes" &
-#     r$sufficient_water_hygiene_personal == "yes" & r$sufficient_water_other_water == "no") ~ 2,
-#  (r$sufficient_water_drinking == "yes" & (r$sufficient_water_cooking == "yes" & 
-#                                             r$sufficient_water_hygiene_personal == "no") | 
-#     (r$sufficient_water_cooking == "no" & r$sufficient_water_hygiene_personal == "yes")) ~ 3,
-#  (r$sufficient_water_drinking == "yes" & r$sufficient_water_cooking == "no" & 
-#     r$sufficient_water_hygiene_personal == "no") ~ 4,
-#  (r$sufficient_water_drinking == "no") ~ 5)
+r$s_14 <- case_when(
+  (r$sufficient_water_cooking == "yes" & r$sufficient_water_drinking == "yes" &
+     r$sufficient_water_hygiene_personal == "yes" & r$sufficient_water_other_water == "yes") ~ 1,
+  (r$sufficient_water_cooking == "yes" & r$sufficient_water_drinking == "yes" &
+     r$sufficient_water_hygiene_personal == "yes" & r$sufficient_water_other_water == "no") ~ 2,
+  (r$sufficient_water_drinking == "yes" & (r$sufficient_water_cooking == "yes" & 
+                                             r$sufficient_water_hygiene_personal == "no") | 
+     (r$sufficient_water_cooking == "no" & r$sufficient_water_hygiene_personal == "yes")) ~ 3,
+  (r$sufficient_water_drinking == "yes" & r$sufficient_water_cooking == "no" & 
+     r$sufficient_water_hygiene_personal == "no") ~ 4,
+  (r$sufficient_water_drinking == "no") ~ 5)
 
 #S_14 % of households with access to an improved water source for drinking and domestic purposes
-r$s_14 <- case_when(
-  r$drinking_water_source == "network_private" | r$drinking_water_source == "network_comm" | 
-    r$drinking_water_source == "illegal_connection" ~ 1,
-  r$drinking_water_source == "borehole" | r$drinking_water_source == "prot_well" | 
-    r$drinking_water_source == "prot_tank" | r$drinking_water_source == "prot_spring"  ~ 2,
-    r$drinking_water_source == "bottled_water" | r$drinking_water_source == "water_trucking" ~ 3,
-    r$drinking_water_source == "unprot_well" | r$drinking_water_source == "unprot_spring" ~ 4,
-    r$drinking_water_source == "surface_water" ~ 5)
+#r$s_14 <- case_when(
+#  r$drinking_water_source == "network_private" | r$drinking_water_source == "network_comm" | 
+#    r$drinking_water_source == "illegal_connection" ~ 1,
+#  r$drinking_water_source == "borehole" | r$drinking_water_source == "prot_well" | 
+#    r$drinking_water_source == "prot_tank" | r$drinking_water_source == "prot_spring"  ~ 2,
+#    r$drinking_water_source == "bottled_water" | r$drinking_water_source == "water_trucking" ~ 3,
+#    r$drinking_water_source == "unprot_well" | r$drinking_water_source == "unprot_spring" ~ 4,
+#    r$drinking_water_source == "surface_water" ~ 5)
 
 
 
@@ -426,7 +426,7 @@ hno$mean <-  apply(hno, 1, function(y) {
 
 #CRITICAL INDICATORS
 hno$critical <-  apply(hno, 1, function(y) {
-  max(y[c("s_8", "s_15")])
+  max(y[c("s_8")])
 })
 hno$critical <- ifelse(is.na(hno$critical),0, hno$critical)
 hno$final_severity <- ifelse(hno$critical > hno$mean, hno$critical, hno$mean)
