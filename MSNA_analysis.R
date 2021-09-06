@@ -22,6 +22,9 @@ R.version
   source("R/functions/analysisplan_factory.R")
   source("R/functions/HNO_Recoding.R")
   source("R/functions/Binary_Recoding.R")
+  source("R/functions/Population_groups_Recoding.R")
+  
+
   #source("R/functions/presentation_recoding.R")
   #source("R/functions/gimac_recoding.R")
 
@@ -55,7 +58,7 @@ R.version
 
 #CREATE NEW FUNCTION FOR WEIGHTING
 #Gov level aggregation
-response <- response %>% drop_na(weights)
+#response <- response %>% drop_na(weights)
 response$weights <- ifelse(response$strata == "camps_wb", 1, 
                            response$weights)
 
@@ -65,7 +68,13 @@ response$weights <- ifelse(response$strata == "camps_wb", 1,
   
 
 #RECODING OF INDICATORS
-response_with_composites <- recoding_hno(response, loop)
+ 
+response <- recoding_pop_groups(response)
+ 
+response_with_composites <- recoding_preliminary(response, loop)
+
+table(response_with_composites$gender_disagg)
+table(response_with_composites$camp_refugee_disagg)
 
 #DISAGGREGATE MALE AND FEMALE HEADED HHs
 #female_headed <- response_with_composites[which(response_with_composites$X_uuid %in% loop$X_uuid[which(loop$sex == "female" & loop$relationship == "head")]),]
@@ -76,22 +85,23 @@ response_with_composites <- recoding_hno(response, loop)
 #                                          response_with_composites$cannot_diff > 0)
 #response_with_composites_nodisab <- subset(response_with_composites, response_with_composites$lot_diff == 0 & 
 #                                          response_with_composites$cannot_diff == 0)
-response_north_gaza <- subset(response_with_composites, response_with_composites$hno_strata == "north_gaza")
+#response_north_gaza <- subset(response_with_composites, response_with_composites$hno_strata == "north_gaza")
                         
-write.csv(response_north_gaza, "output/north_gaza_dataset_with_composites.csv")
+#write.csv(response_north_gaza, "output/north_gaza_dataset_with_composites.csv")
 
 
 #LOAD ANALYSISPLAN
-dap_name <- "oPt_hno"
+dap_name <- "oPt_preliminary"
 analysisplan <- read.csv(sprintf("input/dap/dap_%s.csv",dap_name), stringsAsFactors = F, sep = ";")
 response_with_composites$one <- "one"
 
 
 
+analysisplan$independent.variable <- "camp_refugee_disagg"
 
 #AGGREGATE ACROSS DISTRICTS OR/AND POPULATION GROUPS
-#analysisplan <- analysisplan_nationwide(analysisplan)
-analysisplan <- analysisplan_pop_group_aggregated(analysisplan)
+analysisplan <- analysisplan_nationwide(analysisplan)
+#analysisplan <- analysisplan_pop_group_aggregated(analysisplan)
 #analysisplan$hypothesis.type <- "group_difference"
 
 
@@ -100,7 +110,7 @@ result <- from_analysisplan_map_to_output(response_with_composites, analysisplan
                                           questionnaire = questionnaire, confidence_level = 0.95)
 
 
-name <- "oPt_FINAL_severity_hno_strata_regular_rounding_without_s14"
+name <- "oPt_preliminary_national_camp_refugee_disagg"
 saveRDS(result,paste(sprintf("output/RDS/result_%s.RDS", name)))
 #summary[which(summary$dependent.var == "g51a"),]
 response_with_composites$strata <- ifelse(response_with_composites$strata == "area_a_b", "area_ab", 
