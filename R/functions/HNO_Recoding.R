@@ -352,10 +352,10 @@ r$s_15 <- case_when(r$w3 == 1 ~ 1,
 
 
 #S_16 % of people with inadequate access to sanitation services
-r$s_16 <- case_when(r$latrine_waste_drainage == "sewage_system" ~ 1,
-                   r$latrine_waste_drainage == "covered_septic" ~ 2,
-                   r$latrine_waste_drainage == "handdug_hole" ~ 3,
-                   r$latrine_waste_drainage == "open_area" ~ 4)
+#r$s_16 <- case_when(r$latrine_waste_drainage == "sewage_system" ~ 1,
+#                   r$latrine_waste_drainage == "covered_septic" ~ 2,
+#                   r$latrine_waste_drainage == "handdug_hole" ~ 3,
+#                   r$latrine_waste_drainage == "open_area" ~ 4)
 
 
 #LIVELIHOODS##########################

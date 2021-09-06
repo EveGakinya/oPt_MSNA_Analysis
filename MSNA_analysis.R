@@ -22,6 +22,7 @@ R.version
   source("R/functions/analysisplan_factory.R")
   source("R/functions/HNO_Recoding.R")
   source("R/functions/Binary_Recoding.R")
+  source("R/functions/HNO_Recoding_hum_condition.R")
   #source("R/functions/presentation_recoding.R")
   #source("R/functions/gimac_recoding.R")
 
@@ -80,7 +81,7 @@ response_with_composites <- recoding_hno(response, loop)
 
 
 #LOAD ANALYSISPLAN
-dap_name <- "oPt_preliminary"
+dap_name <- "opt_hno"
 analysisplan <- read.csv(sprintf("input/dap/dap_%s.csv",dap_name), stringsAsFactors = F, sep = ";")
 analysisplan$independent.variable <-  "female_headed"
 analysisplan$independent.variable <-  "gazans_displaced"
@@ -95,14 +96,18 @@ analysisplan$repeat.for.variable <- "region"
 #analysisplan <- analysisplan_nationwide(analysisplan)
 analysisplan <- analysisplan_pop_group_aggregated(analysisplan)
 #analysisplan$hypothesis.type <- "group_difference"
-
+response_with_composites$cluster_id <- ifelse(response_with_composites$region == "ej" |
+                                                response_with_composites$region == "west_bank", 
+                                                      response_with_composites$locality_code, 
+                                              response_with_composites$X_uuid)
+#response_with_composites$l7_iii <- NULL
 
 result <- from_analysisplan_map_to_output(response_with_composites, analysisplan = analysisplan,
-                                          weighting = weight_fun,
+                                          weighting = weight_fun, cluster_variable_name = "cluster_id",
                                           questionnaire = questionnaire, confidence_level = 0.95)
 
 
-name <- "oPt_preliminary_incl food coping"
+name <- "oPt_hno_overall_removed s_16"
 saveRDS(result,paste(sprintf("output/RDS/result_%s.RDS", name)))
 #summary[which(summary$dependent.var == "g51a"),]
 response_with_composites$strata <- ifelse(response_with_composites$strata == "area_a_b", "area_ab", 
@@ -112,6 +117,9 @@ write.csv(summary, sprintf("output/raw_results/raw_results_%s.csv", name), row.n
 summary <- read.csv(sprintf("output/raw_results/raw_results_%s.csv", name), stringsAsFactors = F)
 summary <- correct.zeroes(summary)
 summary <- summary %>% filter(dependent.var.value %in% c(NA,1))
+#summary$max <- ifelse(summary$max > 1, 1, summary$max)
+#summary$min <- ifelse(summary$min < 0, 0, summary$min)
+
 write.csv(summary, sprintf("output/raw_results/raw_results_%s_filtered.csv", name), row.names=F)
 if(all(is.na(summary$independent.var.value))){summary$independent.var.value <- "all"}
 groups <- unique(summary$independent.var.value)

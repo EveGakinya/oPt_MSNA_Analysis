@@ -1,4 +1,4 @@
-recoding_hno_coping <- function(r, loop) {
+recoding_hno_hum_conditions <- function(r, loop) {
   
   r <- response
   names(r)[1]<-"X_uuid"
@@ -327,11 +327,11 @@ recoding_hno_coping <- function(r, loop) {
                       r$water_coping_mechanism_g.reduced_drinking_water ==1 | r$water_coping_mechanism_g.drank_cleaning_water == 1 ~ 5)
   
   
-  #S_16 % of people with inadequate access to sanitation services
-  r$s_16 <- case_when(r$latrine_waste_drainage == "sewage_system" ~ 1,
-                      r$latrine_waste_drainage == "covered_septic" ~ 2,
-                      r$latrine_waste_drainage == "handdug_hole" ~ 3,
-                      r$latrine_waste_drainage == "open_area" ~ 4)
+#  #S_16 % of people with inadequate access to sanitation services
+#  r$s_16 <- case_when(r$latrine_waste_drainage == "sewage_system" ~ 1,
+#                      r$latrine_waste_drainage == "covered_septic" ~ 2,
+#                      r$latrine_waste_drainage == "handdug_hole" ~ 3,
+#                      r$latrine_waste_drainage == "open_area" ~ 4)
   
   
   #LIVELIHOODS##########################
@@ -385,7 +385,7 @@ recoding_hno_coping <- function(r, loop) {
   
   #Humanitarian Condition - Coping Mechanisms
   #MEAN OF MAX 50% CALCULATION
-  hno_coping <-  r[c("s_2", "s_6", "s_15", "s_16")]      
+  hno_coping <-  r[c("s_2", "s_6", "s_15")]      
   #Normal rounding
   hno_coping$final_severity_coping <-  apply(hno_coping, 1, function(y) {
     round2(mean(tail(sort(y), (floor(ncol(hno_coping)/2)))))
@@ -402,7 +402,7 @@ recoding_hno_coping <- function(r, loop) {
   
   #Humanitarian Condition - LIVING STANDARDS
   #MEAN OF MAX 50% CALCULATION
-  hno_living <-  r[c("s_3", "s_4", "s_5", "s_7", "s_8", "s_9", "s_10", "s_14", "s_17", "s_18", "s_19",
+  hno_living <-  r[c("s_3", "s_4", "s_5", "s_7", "s_8", "s_9", "s_14", "s_17", "s_18", "s_19",
                      "s_20", "s_21")]      
   #Normal rounding
   hno_living$final_severity_living <-  apply(hno_living, 1, function(y) {
@@ -421,7 +421,7 @@ recoding_hno_coping <- function(r, loop) {
   
   #Humanitarian Condition - Physical and Mental Wellbeing
   #MEAN OF MAX 50% CALCULATION
-  hno_wellbeing <-  r[c("s_1", "s_11", "s_12", "s_13")]      
+  hno_wellbeing <-  r[c("s_1", "s_11", "s_10", "s_12", "s_13")]      
   #Normal rounding
   hno_wellbeing$final_severity_wellbeing <-  apply(hno_wellbeing, 1, function(y) {
     round2(mean(tail(sort(y), (floor(ncol(hno_wellbeing)/2)))))
@@ -528,7 +528,7 @@ recoding_hno_coping <- function(r, loop) {
   
   #Humanitarian Sector - WASH
   #MEAN OF MAX 50% CALCULATION
-  hno_wash <-  r[c("s_14", "s_15", "s_16")]      
+  hno_wash <-  r[c("s_14", "s_15")]      
   #Normal rounding
   hno_wash$final_severity_wash <-  apply(hno_wash, 1, function(y) {
     round2(mean(tail(sort(y), (floor(ncol(hno_wash)/2)))))
@@ -541,33 +541,7 @@ recoding_hno_coping <- function(r, loop) {
   r$hno_severity_wash_4 <- ifelse(r$final_severity_wash == 4, 1,0)
   r$hno_severity_wash_5 <- ifelse(r$final_severity_wash == 5, 1,0)
   
-  
-  
-  #Rounding up
-  #hno$mean <-  apply(hno, 1, function(y) {
-  #  ceiling(mean(tail(sort(y), (floor(ncol(hno)/2)))))
-  #})
-  
-  #d <- density(hno$mean_unrounded) 
-  #plot(d)
-  #abline(v=c(2,2.5), col=c("black", "black"), lty=c(2,2), lwd=c(1, 1))
-  
-  
-  #CRITICAL INDICATORS
- # hno$critical <-  apply(hno, 1, function(y) {
-#    max(y[c("s_8", "s_15")])
-#  })
-#  hno$critical <- ifelse(is.na(hno$critical),0, hno$critical)
-#  hno$final_severity <- ifelse(hno$critical > hno$mean, hno$critical, hno$mean)
-  
-  
-  #hno$final_severity <- as.character(as.numeric(hno$final_severity))
-  r$final_severity <- hno$final_severity
-  r$hno_severity_1 <- ifelse(r$final_severity == 1, 1,0)
-  r$hno_severity_2 <- ifelse(r$final_severity == 2, 1,0)
-  r$hno_severity_3 <- ifelse(r$final_severity == 3, 1,0)
-  r$hno_severity_4 <- ifelse(r$final_severity == 4, 1,0)
-  r$hno_severity_5 <- ifelse(r$final_severity == 5, 1,0)
-  
+
+
   return(r)
 }
