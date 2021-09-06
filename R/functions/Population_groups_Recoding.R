@@ -1,7 +1,7 @@
 
 recoding_pop_groups <- function(r) {
 ### Female headed household
-r$female_headed <- case_when(r$hhh == "yes" & r$gender_respondent == "female"| 
+r$gender_disagg <- case_when(r$hhh == "yes" & r$gender_respondent == "female"| 
                                r$gender_hhh == "female" ~ "female_headed",
                              TRUE ~ "male_headed")
 ###Gazans displaced by most recent escalation
@@ -21,7 +21,7 @@ r$recent_shelter_damage <- case_when(r$building_damage_level_2021_g %in% c("majo
                                      TRUE ~ NA_character_)
 
 ###In-camp refugees and Out-camp refugee
-r$in_camp_refugee <- case_when(r$refugee_status == "yes" & grepl("camp", r$strata) ~ "in_camp_refugee",
+r$camp_refugee_disagg <- case_when(r$refugee_status == "yes" & grepl("camp", r$strata) ~ "in_camp_refugee",
                                r$refugee_status == "yes" & !grepl("camp", r$strata) ~ "out_camp_refugee",
                                TRUE ~ NA_character_)
 
