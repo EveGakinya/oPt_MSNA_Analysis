@@ -1,0 +1,108 @@
+Indicator.Group.Sector,research.question,sub.research.question,repeat.for.variable,independent.variable,independent.variable.type,dependent.variable,dependent.variable.type,hypothesis.type
+Livelihoods,"% of HHs where at least one member has lost their job PERMANENTLY as a result of COVID
+","% of HHs where at least one member has lost their job PERMANENTLY as a result of COVID
+",,,categorical,ln1,numerical,direct_reporting
+Livelihoods,"% of HHs where at least one member has lost their job TEMPORARILY as a result of covid
+","% of HHs where at least one member has lost their job TEMPORARILY as a result of covid
+",,,categorical,ln2,numerical,direct_reporting
+Livelihoods,% of HHs with an average food expenditure share of 0-30%,% of HHs with an average food expenditure share of 0-30%,,,categorical,ln3,numerical,direct_reporting
+Livelihoods,% of HHs with an average food expenditure share of 30-60%,% of HHs with an average food expenditure share of 30-60%,,,categorical,ln4,numerical,direct_reporting
+Livelihoods,% of HHs with an average food expenditure share of > 60%,% of HHs with an average food expenditure share of > 60%,,,categorical,ln5,numerical,direct_reporting
+Livelihoods,"% of HHs who report not using any stress, crisis or emergency coping strategies","% of HHs who report not using any stress, crisis or emergency coping strategies",,,categorical,ln6,numerical,direct_reporting
+Livelihoods,% of HHs with an income PER PERSON of < 100,% of HHs with an income PER PERSON of < 100,,,categorical,ln7_i,numerical,direct_reporting
+Livelihoods,% of HHs with an income PER PERSON of 100-200,% of HHs with an income PER PERSON of 100-200,,,categorical,ln7_ii,numerical,direct_reporting
+Livelihoods,% of HHs with an income PER PERSON of 200-400,% of HHs with an income PER PERSON of 200-400,,,categorical,ln7_iii,numerical,direct_reporting
+Livelihoods,% of HHs with an income PER PERSON of > 400,% of HHs with an income PER PERSON of > 400,,,categorical,ln7_iv,numerical,direct_reporting
+Livelihoods,% of HHs with a debt value of 0,% of HHs with a debt value of 0,,,categorical,ln8,numerical,direct_reporting
+Livelihoods,"% of HHs with a debt value of 0-5,000","% of HHs with a debt value of 0-5,000",,,categorical,ln9,numerical,direct_reporting
+Livelihoods,"% of HHs with a debt value of 5000-20,000","% of HHs with a debt value of 5000-20,000",,,categorical,ln10,numerical,direct_reporting
+Livelihoods,"% of HHs with a debt value of >20,000","% of HHs with a debt value of >20,000",,,categorical,ln11,numerical,direct_reporting
+Protection,% of hhs where women and girls avoid certain areas because unsafe BY AREA that they avoid,At the workplace                                                            ,,,categorical,ln12_i,numerical,direct_reporting
+Protection,% of hhs where women and girls avoid certain areas because unsafe BY AREA that they avoid,Latrines and bathing facilities,,,categorical,ln12_ii,numerical,direct_reporting
+Protection,% of hhs where women and girls avoid certain areas because unsafe BY AREA that they avoid,Water points                                                               ,,,categorical,ln12_iii,numerical,direct_reporting
+Protection,% of hhs where women and girls avoid certain areas because unsafe BY AREA that they avoid,Distribution areas,,,categorical,ln12_iv,numerical,direct_reporting
+Protection,% of hhs where women and girls avoid certain areas because unsafe BY AREA that they avoid,Near settlements/ when crossing checkpoints/ Near ARA (Gaza),,,categorical,ln12_v,numerical,direct_reporting
+Protection,% of hhs where women and girls avoid certain areas because unsafe BY AREA that they avoid,Markets,,,categorical,ln12_vi,numerical,direct_reporting
+Protection,% of hhs where women and girls avoid certain areas because unsafe BY AREA that they avoid,Social/community areas,,,categorical,ln12_vii,numerical,direct_reporting
+Protection,% of hhs where women and girls avoid certain areas because unsafe BY AREA that they avoid,On public transportation  ,,,categorical,ln12_viii,numerical,direct_reporting
+Protection,% of hhs where women and girls avoid certain areas because unsafe BY AREA that they avoid,On their way to school                         ,,,categorical,ln12_ix,numerical,direct_reporting
+Protection,% of hhs where women and girls avoid certain areas because unsafe BY AREA that they avoid,On their way to women community centers/health centers,,,categorical,ln12_x,numerical,direct_reporting
+Protection,% of hhs where women and girls avoid certain areas because unsafe BY AREA that they avoid,While seeking/receiving humanitarian aid - e.g. e-vouchers,,,categorical,ln12_xi,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect",None,,,categorical,ln13_i,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect",Opening or cracks in roof,,,categorical,ln13_ii,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect",Roof partially collapsed,,,categorical,ln13_iii,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect",Broken or cracked windows,,,categorical,ln13_iv,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect",Exterior doors broken / unable to shut properly,,,categorical,ln13_v,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect",Exterior doors or windows missing,,,categorical,ln13_vi,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect",Large cracks / openings in most walls,,,categorical,ln13_vii,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect",Some cracks in some walls,,,categorical,ln13_viii,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect",Some walls fully collapsed,,,categorical,ln13_ix,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect",Damaged floors,,,categorical,ln13_x,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect",Severe structural damage and unsafe for living,,,categorical,ln13_xi,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect",Total structural collapse,,,categorical,ln13_xii,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect",Foundation damaged or shifted,,,categorical,ln13_xiii,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect","Gas, water or sewage system damaged",,,categorical,ln13_xiv,numerical,direct_reporting
+Shelter,"% of households reporting that their shelter has any kind of damage or defects, by type of damage or defect",Electricity supply line damaged and not functional,,,categorical,ln13_xv,numerical,direct_reporting
+WASH,% of HHs having access to sanitation facility items BY TYPE OF ITEM,None,,,categorical,ln14_i,numerical,direct_reporting
+WASH,% of HHs having access to sanitation facility items BY TYPE OF ITEM,Toilet seat,,,categorical,ln14_ii,numerical,direct_reporting
+WASH,% of HHs having access to sanitation facility items BY TYPE OF ITEM,Bidet,,,categorical,ln14_iii,numerical,direct_reporting
+WASH,% of HHs having access to sanitation facility items BY TYPE OF ITEM,Toilet Niagara,,,categorical,ln14_iv,numerical,direct_reporting
+WASH,% of HHs having access to sanitation facility items BY TYPE OF ITEM,Handwashing station (in or beside the latrine),,,categorical,ln14_v,numerical,direct_reporting
+WASH,% of HHs having access to sanitation facility items BY TYPE OF ITEM,Soap,,,categorical,ln14_vi,numerical,direct_reporting
+WASH,% of HHs having access to sanitation facility items BY TYPE OF ITEM,Toilet paper,,,categorical,ln14_vii,numerical,direct_reporting
+WASH,% of HHs by DRINKING Water Source,Water Trucking,,,categorical,ln15_i,numerical,direct_reporting
+WASH,% of HHs by DRINKING Water Source,Piped water into compound,,,categorical,ln15_ii,numerical,direct_reporting
+WASH,% of HHs by DRINKING Water Source,Piped water connected to public tap,,,categorical,ln15_iii,numerical,direct_reporting
+WASH,% of HHs by DRINKING Water Source,Borehole,,,categorical,ln15_iv,numerical,direct_reporting
+WASH,% of HHs by DRINKING Water Source,Illegal connection to piped network,,,categorical,ln15_v,numerical,direct_reporting
+WASH,% of HHs by DRINKING Water Source,"Surface water without pre-treatment (river, dam, lake, pond, stream, canal)",,,categorical,ln15_vi,numerical,direct_reporting
+WASH,% of HHs by DRINKING Water Source,Bottled water,,,categorical,ln15_vii,numerical,direct_reporting
+WASH,% of HHs by DRINKING Water Source,Protected well,,,categorical,ln15_viii,numerical,direct_reporting
+WASH,% of HHs by DRINKING Water Source,Unprotected well,,,categorical,ln15_ix,numerical,direct_reporting
+WASH,% of HHs by DRINKING Water Source,Protected spring,,,categorical,ln15_x,numerical,direct_reporting
+WASH,% of HHs by DRINKING Water Source,Unprotected spring,,,categorical,ln15_xi,numerical,direct_reporting
+WASH,% of HHs by DRINKING Water Source,Protected rainwater tank,,,categorical,ln15_xii,numerical,direct_reporting
+AAP,% of HH who received cash and reported delays_in_delivery ,% of HH who received cash and reported delays_in_delivery ,,,categorical,ln16_i,numerical,direct_reporting
+AAP,% of HH who received cash and reported quality_not_good,% of HH who received cash and reported quality_not_good,,,categorical,ln16_ii,numerical,direct_reporting
+AAP,% of HH who received cash and reported quantity_not_enough,% of HH who received cash and reported quantity_not_enough,,,categorical,ln16_iii,numerical,direct_reporting
+AAP,% of HH who received food and reported delays_in_delivery,% of HH who received food and reported delays_in_delivery,,,categorical,ln17_i,numerical,direct_reporting
+AAP,% of HH who received food and reported quality_not_good,% of HH who received food and reported quality_not_good,,,categorical,ln17_ii,numerical,direct_reporting
+AAP,% of HH who received food and reported quantity_not_enough,% of HH who received food and reported quantity_not_enough,,,categorical,ln17_iii,numerical,direct_reporting
+AAP,% of HH who received health_services and reported delays_in_delivery,% of HH who received health_services and reported delays_in_delivery,,,categorical,ln18_i,numerical,direct_reporting
+AAP,% of HH who received health_services and reported quality_not_good,% of HH who received health_services and reported quality_not_good,,,categorical,ln18_ii,numerical,direct_reporting
+AAP,% of HH who received health_services and reported quantity_not_enough,% of HH who received health_services and reported quantity_not_enough,,,categorical,ln18_iii,numerical,direct_reporting
+AAP,% of HH who received other_non_food_items and reported delays_in_delivery ,% of HH who received other_non_food_items and reported delays_in_delivery ,,,categorical,ln19_i,numerical,direct_reporting
+AAP,% of HH who received other_non_food_items and reported quality_not_good,% of HH who received other_non_food_items and reported quality_not_good,,,categorical,ln19_ii,numerical,direct_reporting
+AAP,% of HH who received other_non_food_items and reported quantity_not_enough,% of HH who received other_non_food_items and reported quantity_not_enough,,,categorical,ln19_iii,numerical,direct_reporting
+Health,% hh with at least one individual with a communicating disability  ,% hh with at least one individual with a communicating disability  ,,,categorical,communicating,numerical,direct_reporting
+Health,% hh with at least one individual with a hearing disability  ,% hh with at least one individual with a hearing disability  ,,,categorical,hearing,numerical,direct_reporting
+Health,% hh with at least one individual with a remembering disability,% hh with at least one individual with a remembering disability,,,categorical,remembering,numerical,direct_reporting
+Health,% hh with at least one individual with a washing disability,% hh with at least one individual with a washing disability,,,categorical,washing,numerical,direct_reporting
+Health,% hh with at least one individual with a seeing disability,% hh with at least one individual with a seeing disability,,,categorical,seeing,numerical,direct_reporting
+Health,% hh with at least one individual with a walking disability,% hh with at least one individual with a walking disability,,,categorical,walking,numerical,direct_reporting
+Livelihoods,"% of households reporting that their typical monthly income has changed since the recent escalation, by DEGREE OF CHANGE",No change,,,categorical,ln20_i,numerical,direct_reporting
+Livelihoods,"% of households reporting that their typical monthly income has changed since the recent escalation, by DEGREE OF CHANGE",Decreased a little,,,categorical,ln20_ii,numerical,direct_reporting
+Livelihoods,"% of households reporting that their typical monthly income has changed since the recent escalation, by DEGREE OF CHANGE",Decreased a lot,,,categorical,ln20_iii,numerical,direct_reporting
+Livelihoods,"% of households reporting that their typical monthly income has changed since the recent escalation, by DEGREE OF CHANGE",Increased a little,,,categorical,ln20_iv,numerical,direct_reporting
+Livelihoods,"% of households reporting that their typical monthly income has changed since the recent escalation, by DEGREE OF CHANGE",Increased a lot,,,categorical,ln20_v,numerical,direct_reporting
+Livelihoods,"% of households reporting an impact of the recent conflict on their livelihood assets or resources, by TYPE OF IMPACT",None,,,categorical,ln21_i,numerical,direct_reporting
+Livelihoods,"% of households reporting an impact of the recent conflict on their livelihood assets or resources, by TYPE OF IMPACT",Temporary loss of income,,,categorical,ln21_ii,numerical,direct_reporting
+Livelihoods,"% of households reporting an impact of the recent conflict on their livelihood assets or resources, by TYPE OF IMPACT",Permanent loss of income,,,categorical,ln21_iii,numerical,direct_reporting
+Livelihoods,"% of households reporting an impact of the recent conflict on their livelihood assets or resources, by TYPE OF IMPACT","Inability of previous earners to work (e.g. injury, death)",,,categorical,ln21_iv,numerical,direct_reporting
+Livelihoods,"% of households reporting an impact of the recent conflict on their livelihood assets or resources, by TYPE OF IMPACT",Depleted savings,,,categorical,ln21_v,numerical,direct_reporting
+Livelihoods,"% of households reporting an impact of the recent conflict on their livelihood assets or resources, by TYPE OF IMPACT",Increase/taking on debt,,,categorical,ln21_vi,numerical,direct_reporting
+Livelihoods,"% of households reporting an impact of the recent conflict on their livelihood assets or resources, by TYPE OF IMPACT","Destruction of agricultural assets (e.g. herds, bees, aqua farms)",,,categorical,ln21_vii,numerical,direct_reporting
+Livelihoods,"% of households reporting an impact of the recent conflict on their livelihood assets or resources, by TYPE OF IMPACT","Destruction of non-agricultural office assets (e.g. workspace, shops)",,,categorical,ln21_viii,numerical,direct_reporting
+Livelihoods,"% of households reporting an impact of the recent conflict on their livelihood assets or resources, by TYPE OF IMPACT",Insecurity preventing livelihood activities;,,,categorical,ln21_ix,numerical,direct_reporting
+Livelihoods,"% of households reporting an impact of the recent conflict on their livelihood assets or resources, by TYPE OF IMPACT",Cannot physically access workplaces,,,categorical,ln21_x,numerical,direct_reporting
+Livelihoods,"% of households reporting an impact of the recent conflict on their livelihood assets or resources, by TYPE OF IMPACT",Increase recourse to negative coping mechanism due to lack of livelihoods opportunities;,,,categorical,ln21_xi,numerical,direct_reporting
+Livelihoods,"% of households reporting an impact of the recent conflict on their livelihood assets or resources, by TYPE OF IMPACT",Previous wage earners are needed at home (e.g. care-giving),,,categorical,ln21_xii,numerical,direct_reporting
+Livelihoods,"% of households reporting an impact of the recent conflict on their livelihood assets or resources, by TYPE OF IMPACT",No livelihood opportunities;,,,categorical,ln21_xiii,numerical,direct_reporting
+AAP,"% of households reporting access barriers to aid as a result of the recent conflict in Gaza, by TYPE OF BARRIER",Did not apply,,,categorical,ln22_i,numerical,direct_reporting
+AAP,"% of households reporting access barriers to aid as a result of the recent conflict in Gaza, by TYPE OF BARRIER","Residing in an inaccessible area (e.g. remote, insecure)",,,categorical,ln22_ii,numerical,direct_reporting
+AAP,"% of households reporting access barriers to aid as a result of the recent conflict in Gaza, by TYPE OF BARRIER",Residing in an area where providers do not operate,,,categorical,ln22_iii,numerical,direct_reporting
+AAP,"% of households reporting access barriers to aid as a result of the recent conflict in Gaza, by TYPE OF BARRIER","Was deemed ineligible (e.g. working family members, high income, insufficient damage to structure)",,,categorical,ln22_iv,numerical,direct_reporting
+AAP,"% of households reporting access barriers to aid as a result of the recent conflict in Gaza, by TYPE OF BARRIER",Lack of resources by providers,,,categorical,ln22_v,numerical,direct_reporting
+AAP,"% of households reporting access barriers to aid as a result of the recent conflict in Gaza, by TYPE OF BARRIER",Lack of documentation,,,categorical,ln22_vi,numerical,direct_reporting
+AAP,"% of households reporting access barriers to aid as a result of the recent conflict in Gaza, by TYPE OF BARRIER",Did not understand application procedures,,,categorical,ln22_vii,numerical,direct_reporting
+AAP,"% of households reporting access barriers to aid as a result of the recent conflict in Gaza, by TYPE OF BARRIER",Did not know how to apply,,,categorical,ln22_viii,numerical,direct_reporting

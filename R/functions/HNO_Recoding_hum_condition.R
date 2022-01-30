@@ -390,6 +390,9 @@ recoding_hno_hum_conditions <- function(r, loop) {
   hno_coping$final_severity_coping <-  apply(hno_coping, 1, function(y) {
     round2(mean(tail(sort(y), (floor(ncol(hno_coping)/2)))))
   })
+   ####MEAN OF THE INDICATORS
+  # hno_coping$final_severity_coping <-  round2(rowMeans(hno_coping,na.rm = TRUE))
+  
   #HNO FINAL SEVERITY | COPING
   r$final_severity_coping <- hno_coping$final_severity_coping
   r$hno_severity_coping_1 <- ifelse(r$final_severity_coping == 1, 1,0)
@@ -402,12 +405,13 @@ recoding_hno_hum_conditions <- function(r, loop) {
   
   #Humanitarian Condition - LIVING STANDARDS
   #MEAN OF MAX 50% CALCULATION
-  hno_living <-  r[c("s_3", "s_4", "s_5", "s_7", "s_8", "s_9", "s_14", "s_17", "s_18", "s_19",
+  hno_living <-  r[c("s_3", "s_4", "s_5", "s_7", "s_8", "s_9", "s_14", "s_17", "s_18",
                      "s_20", "s_21")]      
   #Normal rounding
   hno_living$final_severity_living <-  apply(hno_living, 1, function(y) {
     round2(mean(tail(sort(y), (floor(ncol(hno_living)/2)))))
   })
+  # hno_living$final_severity_living <-  round2(rowMeans(hno_living,na.rm = TRUE))
   #HNO FINAL SEVERITY | LIVING
   r$final_severity_living <- hno_living$final_severity_living
   r$hno_severity_living_1 <- ifelse(r$final_severity_living == 1, 1,0)
@@ -426,6 +430,7 @@ recoding_hno_hum_conditions <- function(r, loop) {
   hno_wellbeing$final_severity_wellbeing <-  apply(hno_wellbeing, 1, function(y) {
     round2(mean(tail(sort(y), (floor(ncol(hno_wellbeing)/2)))))
   })
+  # hno_wellbeing$final_severity_wellbeing <-  round2(rowMeans(hno_wellbeing,na.rm = TRUE))
   #HNO FINAL SEVERITY | WELLBEING
   r$final_severity_wellbeing <- hno_wellbeing$final_severity_wellbeing
   r$hno_severity_wellbeing_1 <- ifelse(r$final_severity_wellbeing == 1, 1,0)

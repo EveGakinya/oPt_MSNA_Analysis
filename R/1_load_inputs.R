@@ -31,8 +31,8 @@ loop <- read.csv("Input/datasets/cleaned/ind_dataset.csv", sep = ";",
                  stringsAsFactors=F, check.names=T,
                  na.strings = c("", " ", "NA", "#N/A", "N/A"))
 
-#names(response)[names(response) == 'ï..X_uuid'] <- "X_uuid"
-#names(loop)[names(loop) == "ï..X_uuid"] <- "X_submission__uuid"
+names(response)[names(response) == 'ï..X_uuid'] <- "X_uuid"
+names(loop)[names(loop) == "ï..X_uuid"] <- "X_uuid"
 
 #add HNO stratas and governorates to dataset
 response$governorate_gaza <- case_when(response$locality_gaza == "beit_hanun" | 

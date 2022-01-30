@@ -1,0 +1,28 @@
+Indicator Group / Sector,research.question,sub.research.question,repeat.for.variable,independent.variable,independent.variable.type,dependent.variable,dependent.variable.type,hypothesis.type
+MSNI Score,% HH with a severity score of 1,% HH with a severity score of 1,,,,severity_score_1,numerical,direct_reporting
+MSNI Score,% HH with a severity score of 2,% HH with a severity score of 2,,,,severity_score_2,numerical,direct_reporting
+MSNI Score,% HH with a severity score of 3,% HH with a severity score of 3,,,,severity_score_3,numerical,direct_reporting
+MSNI Score,% HH with a severity score of 4,% HH with a severity score of 4,,,,severity_score_4,numerical,direct_reporting
+MSNI Score,% HH with a severity score of 5,% HH with a severity score of 5,,,,severity_score_5,numerical,direct_reporting
+Living Standard Gap,% HH with a living standard gap,% HH with a living standard gap,,,,lsg_all,numerical,direct_reporting
+Living Standard Gap,% HH with a living standard gap,% HH with a living standard gap education,,,,lsg_edu,numerical,direct_reporting
+Living Standard Gap,% HH with a living standard gap,% HH with a living standard gap livelihoods,,,,lsg_liv,numerical,direct_reporting
+Living Standard Gap,% HH with a living standard gap,% HH with a living standard gap food security,,,,lsg_fs,numerical,direct_reporting
+Living Standard Gap,% HH with a living standard gap,% HH with a living standard gap protection,,,,lsg_prt,numerical,direct_reporting
+Living Standard Gap,% HH with a living standard gap,% HH with a living standard gap health,,,,lsg_hlth,numerical,direct_reporting
+Living Standard Gap,% HH with a living standard gap,% HH with a living standard gap shelter,,,,lsg_snfi,numerical,direct_reporting
+Living Standard Gap,% HH with a living standard gap,% HH with a living standard gap wash,,,,lsg_wash,numerical,direct_reporting
+Protection,% of HH where at least one member (SADD) is reporting signs of distress (self-diagnosed),% of HH where at least one member (SADD) is reporting signs of distress (self-diagnosed),,,,prt_1,numerical,direct_reporting
+Protection,% of girls / women who avoid areas because they feel unsafe,% of girls / women who avoid areas because they feel unsafe,,,,prt_2,numerical,direct_reporting
+Protection,% of HH reporting incidents of threats of eviction,% of HH reporting incidents of threats of eviction,,,,prt_3,numerical,direct_reporting
+Protection,%HH impacted by explosive bombardment in their community (since 2014) ,%HH impacted by explosive bombardment in their community (since 2014) ,,,,prt_4,numerical,direct_reporting
+Protection,% of the population identified as having disabilities (in line with the Washington Group Questions),% of the population identified as having disabilities (in line with the Washington Group Questions),,,,prt_5,numerical,direct_reporting
+Protection,% of HH reported women of reproductive age (12-49) with no access to specialized reproductive health services,% of HH reported women of reproductive age (12-49) with no access to specialized reproductive health services,,,,prt_6,numerical,direct_reporting
+Livelihoods,"% HH unable to afford basic needs (% HH taking on debt due to healthcare, food, education, or basic household expenditures)","% HH unable to afford basic needs (% HH taking on debt due to healthcare, food, education, or basic household expenditures)",,,,liv_1,numerical,direct_reporting
+Livelihoods,% of households whose average monthly income was less than 300 NIS per person a month,% of households whose average monthly income was less than 300 NIS per person a month,,,,liv_2,numerical,direct_reporting
+Livelihoods,"% of HHs with debt value > 8,000 NIS","% of HHs with debt value > 8,000 NIS",,,,liv_3,numerical,direct_reporting
+Livelihoods,% HH with at least one adult (18+) unemployed and seeking work,% HH with at least one adult (18+) unemployed and seeking work,,,,liv_4,numerical,direct_reporting
+WASH,% of people with limited access to  improved water sources for drinking purposes,% of people with limited access to  improved water sources for drinking purposes,,,,wash_1,numerical,direct_reporting
+WASH,% of people with limited access to a sufficient quantity of water for drinking and domestic purposes,% of people with limited access to a sufficient quantity of water for drinking and domestic purposes,,,,wash_2,numerical,direct_reporting
+WASH,% of people with limited access to improved functional and safe sanitation facilities ,% of people with limited access to improved functional and safe sanitation facilities ,,,,wash_3,numerical,direct_reporting
+WASH,% of people with limited access to  improved solid waste services,% of people with limited access to  improved solid waste services,,,,wash_4,numerical,direct_reporting
